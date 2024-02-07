@@ -3,7 +3,7 @@ import 'dart:math';
 
 void main() => runApp(const GeominoesApp());
 
-
+// Main app Widget
 class GeominoesApp extends StatelessWidget {
   const GeominoesApp({super.key});
   
@@ -15,6 +15,7 @@ class GeominoesApp extends StatelessWidget {
   }
 }
 
+// Home page (even though there's only one page)
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -22,6 +23,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _MyHomePageState();
 }
 
+// Contains the state (the meat of the page)
 class _MyHomePageState extends State<HomePage> {
   List<List<bool>> grid = List.generate(7, (i) => List.generate(7, (j) => false));
   bool redSquareInGrid = false;
@@ -29,27 +31,27 @@ class _MyHomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
 
+    // Get screen dimensions to base the size off of
     double wd = MediaQuery.of(context).size.width;
     double ht = MediaQuery.of(context).size.height;
     double gridDim = min(wd, ht) / 2;
 
     return Scaffold(
       body: Center(
-        // Column is like VStack. 
-        // I need something similar to a Zstack so the pieces go over the grid
+        // Column allows for vertical positioning
         child: Column(
-          // mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Margin above grid (there's probably a better way to do this)
+            // Epty box for margin above grid (there's probably a better way to do this)
             SizedBox(
               width: gridDim / 4,
               height: gridDim / 4
             ),
 
-            // Grid is a GridView inside of a SizedBox
+            // Box to hold the grid
             SizedBox(
               width: gridDim,
               height: gridDim,
+              // The grid itself
               child: GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 7,
@@ -68,20 +70,25 @@ class _MyHomePageState extends State<HomePage> {
                         });
                       }
                     },
+
+                    // The elements in the grid - need to change these to DragTargets
                     child: Container(
-                      // Make this based on screen size somehow
                       margin: const EdgeInsets.all(2),
                       decoration: BoxDecoration(
-                        color: grid[rowIndex][colIndex] ? Colors.red : Colors.grey,
+                        color: Colors.grey,
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
                   );
                 },
+
+                // Number of items in the grid
                 itemCount: 7 * 7,
+
               ),
             ),
-            // The red square that will be dragged
+
+            // The square that will be dragged
             const SizedBox(height: 100),
             Draggable(
               feedback: Container(
