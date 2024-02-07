@@ -23,10 +23,33 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _MyHomePageState();
 }
 
+// Create a class for the red square
+class RoundBox extends StatelessWidget {
+  final Color itemColor;
+  final double width;
+
+  const RoundBox({
+    super.key,
+    required this.itemColor,
+    required this.width,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width,
+      height: width,
+      decoration: BoxDecoration(
+        color: itemColor,
+        borderRadius: BorderRadius.circular(5)
+      ),
+    );
+  }
+}
+
 // Contains the state (the meat of the page)
 class _MyHomePageState extends State<HomePage> {
   List<List<bool>> grid = List.generate(7, (i) => List.generate(7, (j) => false));
-  bool redSquareInGrid = false;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +64,7 @@ class _MyHomePageState extends State<HomePage> {
         // Column allows for vertical positioning
         child: Column(
           children: [
-            // Epty box for margin above grid (there's probably a better way to do this)
+            // Empty box for margin above grid (there's probably a better way to do this)
             SizedBox(
               width: gridDim / 4,
               height: gridDim / 4
@@ -51,33 +74,19 @@ class _MyHomePageState extends State<HomePage> {
             SizedBox(
               width: gridDim,
               height: gridDim,
+
               // The grid itself
               child: GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 7,
                 ),
-                // What does itemBuilder do?
+                
                 itemBuilder: (context, index) {
-                  int rowIndex = index ~/ 7;
-                  int colIndex = index % 7;
-                  
-                  return GestureDetector(
-                    onTap: () {
-                      if (redSquareInGrid) {
-                        setState(() {
-                          redSquareInGrid = false;
-                          grid[rowIndex][colIndex] = true;
-                        });
-                      }
-                    },
-
-                    // The elements in the grid - need to change these to DragTargets
-                    child: Container(
-                      margin: const EdgeInsets.all(2),
-                      decoration: BoxDecoration(
-                        color: Colors.grey,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
+                  return Container(
+                    margin: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(4),
                     ),
                   );
                 },
@@ -91,30 +100,8 @@ class _MyHomePageState extends State<HomePage> {
             // The square that will be dragged
             const SizedBox(height: 100),
             Draggable(
-              feedback: Container(
-                width: (gridDim - 12) / 7,
-                height: (gridDim - 12) / 7,
-                decoration: BoxDecoration(
-                  color: Colors.red.withOpacity(0.5),
-                  borderRadius: BorderRadius.circular(4)
-                ),
-              ),
-              // Check if square is in grid - if it is set redSquareInGrid to true?
-              onDragEnd: (details) {
-                setState(() {
-                  redSquareInGrid = true;
-                });
-              },
-              // Not sure what this child is here for. The child is a bool
-              child: redSquareInGrid
-                  ? Container() // If red square is in the grid, hide the original red square
-                  : Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(4) ),
-                    ),
+              feedback: RoundBox(itemColor: Colors.teal.withOpacity(0.2), width: gridDim / 7,),
+              child: RoundBox(itemColor: Colors.teal, width: gridDim / 7,)
             ),
           ],
         ),
