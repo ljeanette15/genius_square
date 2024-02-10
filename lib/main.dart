@@ -58,6 +58,7 @@ class _MyHomePageState extends State<HomePage> {
     double wd = MediaQuery.of(context).size.width;
     double ht = MediaQuery.of(context).size.height;
     double gridDim = min(wd, ht) / 2;
+    int acceptedData = 0;
 
     return Scaffold(
       body: Center(
@@ -70,36 +71,122 @@ class _MyHomePageState extends State<HomePage> {
               height: gridDim / 4
             ),
 
-            // Box to hold the grid
+            // Box to hold the grid - maybe place inside of a stack? IDK
             SizedBox(
               width: gridDim,
               height: gridDim,
 
               // The grid itself
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 7,
-                ),
-                
-                itemBuilder: (context, index) {
-                  return Container(
+              child: GridView.count(
+                primary:false,
+                crossAxisSpacing: 3,
+                mainAxisSpacing: 3,
+                crossAxisCount: 7,
+                children: <Widget> [
+                  DragTarget<int>(
+                    builder: (
+                      BuildContext context,
+                      List<dynamic> accepted,
+                      List<dynamic> rejected,
+                    ) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text('$acceptedData'),
+                      );
+                    },
+                    onAccept: (int data) {
+                      setState(() {
+                        acceptedData += data;
+                      });
+                    },
+                  ),
+                  Container(
                     margin: const EdgeInsets.all(2),
                     decoration: BoxDecoration(
                       color: Colors.grey,
                       borderRadius: BorderRadius.circular(4),
                     ),
-                  );
-                },
-
-                // Number of items in the grid
-                itemCount: 7 * 7,
-
+                  ),                 
+                  Container(
+                    margin: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),              
+                  Container(
+                    margin: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),                 
+                  Container(
+                    margin: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),              
+                  Container(
+                    margin: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),              
+                  Container(
+                    margin: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),                 
+                  Container(
+                    margin: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),              
+                  Container(
+                    margin: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ]
               ),
             ),
 
             // The square that will be dragged
-            const SizedBox(height: 100),
-            Draggable(
+            Draggable<int>(
+              data: 10,
               feedback: RoundBox(itemColor: Colors.teal.withOpacity(0.2), width: gridDim / 7,),
               child: RoundBox(itemColor: Colors.teal, width: gridDim / 7,)
             ),
