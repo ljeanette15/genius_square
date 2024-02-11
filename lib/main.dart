@@ -93,7 +93,7 @@ class _MyHomePageState extends State<HomePage> {
                         decoration: BoxDecoration(
                           color: Colors.grey,
                           borderRadius: BorderRadius.circular(4),
-                        ),
+                        ), 
                         child: Text('$acceptedData'),
                       );
                     },
@@ -104,7 +104,7 @@ class _MyHomePageState extends State<HomePage> {
                     },
                   ),
                   Container(
-                    margin: const EdgeInsets.all(2),
+                     margin: const EdgeInsets.all(2),
                     decoration: BoxDecoration(
                       color: Colors.grey,
                       borderRadius: BorderRadius.circular(4),
