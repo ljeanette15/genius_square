@@ -4,7 +4,6 @@ import 'dart:math';
 void main() => runApp(const GeominoesApp());
 
 // Functions
-
 List getBlockerIndeces() {
   var blockerIndeces = List<int>.generate(7, (int index) => index);
 
@@ -74,12 +73,17 @@ class RoundBox extends StatelessWidget {
 // Class for the dragged boxes
 class DragBox extends StatefulWidget {
   final Offset initPos;
-  final Offset pos;
   final Color itemColor;
   final double width;
+  final double spacer;
+  final double gridLeft;
+  final double gridRight;
+  final double gridTop;
+  final double gridBottom;
   final int identifier;
 
-  const DragBox(this.initPos, this.pos, this.itemColor, this.width, this.identifier);
+
+  const DragBox(this.initPos, this.itemColor, this.width, this.spacer, this.gridLeft, this.gridRight, this.gridTop, this.gridBottom, this.identifier);
 
   @override
   DragBoxState createState() => DragBoxState();
@@ -87,30 +91,35 @@ class DragBox extends StatefulWidget {
 
 class DragBoxState extends State<DragBox> {
   Offset position = const Offset(0.0, 0.0);
-  bool cancelled = false;
+  bool dragEnded = false;
 
   @override
   Widget build(BuildContext context) {
-    if(cancelled == true){
+    if (!dragEnded) {
       position = widget.initPos;
-    } else {
-      position = widget.pos;
     }
     return Positioned(
       left: position.dx,
       top: position.dy,
       child: Draggable(
         data: widget.identifier,
-        onDragCompleted: () {
-          setState(() {
-            cancelled = false;
-            position = widget.pos;
-          });
-        },
-        onDraggableCanceled: (velocity, offset) {
-          setState(() {
-            cancelled = true;
-          });
+        onDragEnd: (details) {
+          // If the block is in the grid at all
+          if (details.offset.dx > widget.gridLeft && details.offset.dx < widget.gridRight &&
+              details.offset.dy > widget.gridTop && details.offset.dy < widget.gridBottom) {
+                setState(() {
+                  // Determine where it needs to be in order to lock to the grid
+                  double xpos = details.offset.dx - ((details.offset.dx - widget.gridLeft) % (widget.width + widget.spacer));
+                  double ypos = details.offset.dy - ((details.offset.dy - widget.gridTop) % (widget.width + widget.spacer));
+                  position = Offset(xpos, ypos);
+                  dragEnded = true;
+                });
+          } else {
+            setState(() {
+              position = widget.initPos;
+              dragEnded = false;
+            });
+          }
         },
         feedback: RoundBox(itemColor: widget.itemColor.withOpacity(0.2), width: widget.width * 0.9),
         child: RoundBox(itemColor: widget.itemColor, width: widget.width),
@@ -119,135 +128,10 @@ class DragBoxState extends State<DragBox> {
   }
 }
 
-
-class DragBoxTwo extends StatefulWidget {
-  final Offset initPos;
-  final Offset pos;
-  final Color itemColor;
-  final double width;
-  final int identifier;
-
-  const DragBoxTwo(this.initPos, this.pos, this.itemColor, this.width, this.identifier);
-
-  @override
-  DragBoxTwoState createState() => DragBoxTwoState();
-}
-
-class DragBoxTwoState extends State<DragBoxTwo> {
-  Offset position = const Offset(0.0, 0.0);
-  bool cancelled = false;
-
-  @override
-  Widget build(BuildContext context) {
-    if(cancelled == true){
-      position = widget.initPos;
-    } else {
-      position = widget.pos;
-    }
-    return Positioned(
-      left: position.dx,
-      top: position.dy,
-      child: Draggable(
-        data: widget.identifier,
-        onDragCompleted: () {
-          setState(() {
-            cancelled = false;
-            position = widget.pos;
-          });
-        },
-        onDraggableCanceled: (velocity, offset) {
-          setState(() {
-            cancelled = true;
-          });
-        },
-        feedback: Row(
-          children: <Widget> [
-            RoundBox(itemColor: widget.itemColor.withOpacity(0.2), width: widget.width * 0.9),
-            RoundBox(itemColor: widget.itemColor.withOpacity(0.2), width: widget.width * 0.9),
-          ]
-        ),
-        child: Row(
-          children: <Widget> [
-            RoundBox(itemColor: widget.itemColor, width: widget.width),
-            RoundBox(itemColor: Colors.white.withOpacity(1), width: 3,),
-            RoundBox(itemColor: widget.itemColor, width: widget.width),
-          ]
-        ),
-      )
-    );
-  }
-}
-
-
-class DragBoxThree extends StatefulWidget {
-  final Offset initPos;
-  final Offset pos;
-  final Color itemColor;
-  final double width;
-  final int identifier;
-
-  const DragBoxThree(this.initPos, this.pos, this.itemColor, this.width, this.identifier);
-
-  @override
-  DragBoxThreeState createState() => DragBoxThreeState();
-}
-
-class DragBoxThreeState extends State<DragBoxThree> {
-  Offset position = const Offset(0.0, 0.0);
-  bool cancelled = false;
-
-  @override
-  Widget build(BuildContext context) {
-    if(cancelled == true){
-      position = widget.initPos;
-    } else {
-      position = widget.pos;
-    }
-    return Positioned(
-      left: position.dx,
-      top: position.dy,
-      child: Draggable(
-        data: widget.identifier,
-        onDragCompleted: () {
-          setState(() {
-            cancelled = false;
-            position = widget.pos;
-          });
-        },
-        onDraggableCanceled: (velocity, offset) {
-          setState(() {
-            cancelled = true;
-          });
-        },
-        feedback: Row(
-          children: <Widget> [
-            RoundBox(itemColor: widget.itemColor.withOpacity(0.2), width: widget.width * 0.9),
-            RoundBox(itemColor: Colors.white.withOpacity(1), width: 3,),
-            RoundBox(itemColor: widget.itemColor.withOpacity(0.2), width: widget.width * 0.9),
-            RoundBox(itemColor: Colors.white.withOpacity(1), width: 3,),
-            RoundBox(itemColor: widget.itemColor.withOpacity(0.2), width: widget.width * 0.9),
-          ]
-        ),
-        child: Row(
-          children: <Widget> [
-            RoundBox(itemColor: widget.itemColor, width: widget.width),
-            RoundBox(itemColor: Colors.white.withOpacity(1), width: 3,),
-            RoundBox(itemColor: widget.itemColor, width: widget.width),
-            RoundBox(itemColor: Colors.white.withOpacity(1), width: 3,),
-            RoundBox(itemColor: widget.itemColor, width: widget.width),
-          ]
-        ),
-      )
-    );
-  }
-}
-
-
 // Contains the state (the meat of the page)
 class MainPageState extends State<MainPage> {
   
   var gridPosList = List<Offset>.generate(36, (int index) => Offset(0.0, 0.0));
-  var draggableCurrentPosList = List<Offset>.generate(9, (int index) => Offset(0.0, 0.0));
   var draggableInitPosList = List<Offset>.generate(9, (int index) => Offset(0.0, 0.0));
   var draggableDraggedBool = false;
   var prevScreenWidth = 0.0;
@@ -265,6 +149,7 @@ class MainPageState extends State<MainPage> {
     double gridLeft = (screenWidth - gridDim) / 2;
     double gridTop = (screenHeight - gridDim) / 6;
     double gridBottom = gridTop + gridDim;
+    double gridRight = gridLeft + gridDim;
     double bottomSectionHeight = screenHeight - gridBottom;
     const spacer = 3.0;
     double gridSquareWidth = (gridDim - (5 * spacer)) / 6;
@@ -275,13 +160,12 @@ class MainPageState extends State<MainPage> {
                               gridTop + ((i ~/ 6) * (gridSquareWidth + spacer)));
     }
 
-    // Set positions of draggables if this is the initialization
+    // Set positions of draggables if this is the initialization (or when screen size changes)
     if (!draggableDraggedBool || (screenWidth != prevScreenWidth || screenHeight != prevScreenHeight)) {
       for(var i = 0; i < 9; i++) {
         double x = (i % 3) * (screenWidth / 3) + (((screenWidth / 3) - gridSquareWidth) / 2);
         double y = (gridBottom + (((i ~/ 3) + (1 / 2)) * (bottomSectionHeight / 3)) - (gridSquareWidth / 2));
         draggableInitPosList[i] = Offset(x, y);
-        draggableCurrentPosList[i] = Offset(x, y);
       }
     }
 
@@ -305,27 +189,11 @@ class MainPageState extends State<MainPage> {
               ),
               children: List<Widget>.generate(36, (int i) {
                 return Builder(builder: (BuildContext context) {
-                  return DragTarget<int> (
-                    builder: (
-                      BuildContext context,
-                      List<dynamic> accepted,
-                      List<dynamic> rejected,
-                    ) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: blockerIndeces.contains(i) ? Colors.white : Colors.grey,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      );
-                    },
-                    onAccept: (int ID) {
-                      if (!blockerIndeces.contains(i)) {
-                        setState(() {
-                          draggableDraggedBool = true;
-                          draggableCurrentPosList[ID] = gridPosList[i];
-                        });
-                      }
-                    },
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: blockerIndeces.contains(i) ? Colors.white : Colors.grey,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
                   );
                 });
               }),
@@ -334,19 +202,15 @@ class MainPageState extends State<MainPage> {
         ),
 
         // Pieces
-        DragBox(draggableInitPosList[0], draggableCurrentPosList[0], Colors.red, gridSquareWidth, 0),
-        
-        DragBoxTwo(draggableInitPosList[1], draggableCurrentPosList[1], Colors.orange, gridSquareWidth, 1),
-
-        DragBoxThree(draggableInitPosList[2], draggableCurrentPosList[2], Colors.yellow, gridSquareWidth, 2),
-        
-        DragBox(draggableInitPosList[3], draggableCurrentPosList[3], Colors.green, gridSquareWidth, 3),
-        
-        DragBox(draggableInitPosList[4], draggableCurrentPosList[4], Colors.teal, gridSquareWidth, 4),
-        DragBox(draggableInitPosList[5], draggableCurrentPosList[5], Colors.cyan, gridSquareWidth, 5),
-        DragBox(draggableInitPosList[6], draggableCurrentPosList[6], Colors.blue, gridSquareWidth, 6),
-        DragBox(draggableInitPosList[7], draggableCurrentPosList[7], Colors.indigo, gridSquareWidth, 7),
-        DragBox(draggableInitPosList[8], draggableCurrentPosList[8], Colors.purple, gridSquareWidth, 8),
+        DragBox(draggableInitPosList[0], Colors.red, gridSquareWidth, spacer, gridLeft, gridRight, gridTop, gridBottom, 0),
+        DragBox(draggableInitPosList[1], Colors.orange, gridSquareWidth, spacer, gridLeft, gridRight, gridTop, gridBottom, 1),
+        DragBox(draggableInitPosList[2], Colors.yellow, gridSquareWidth, spacer, gridLeft, gridRight, gridTop, gridBottom, 2),
+        DragBox(draggableInitPosList[3], Colors.green, gridSquareWidth, spacer, gridLeft, gridRight, gridTop, gridBottom, 3),
+        DragBox(draggableInitPosList[4], Colors.teal, gridSquareWidth, spacer, gridLeft, gridRight, gridTop, gridBottom, 4),
+        DragBox(draggableInitPosList[5], Colors.cyan, gridSquareWidth, spacer, gridLeft, gridRight, gridTop, gridBottom, 5),
+        DragBox(draggableInitPosList[6], Colors.blue, gridSquareWidth, spacer, gridLeft, gridRight, gridTop, gridBottom, 6),
+        DragBox(draggableInitPosList[7], Colors.indigo, gridSquareWidth, spacer, gridLeft, gridRight, gridTop, gridBottom, 7),
+        DragBox(draggableInitPosList[8], Colors.purple, gridSquareWidth, spacer, gridLeft, gridRight, gridTop, gridBottom, 8),
 
       ]
     );
