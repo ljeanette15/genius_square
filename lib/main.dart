@@ -3,6 +3,30 @@ import 'dart:math';
 
 void main() => runApp(const GeominoesApp());
 
+// Functions
+
+List getBlockerIndeces() {
+  var blockerIndeces = List<int>.generate(7, (int index) => index);
+
+  List<int> diceOne = [27, 34, 29, 33, 28, 22];
+  List<int> diceTwo = [3, 35, 16, 23, 17, 10];
+  List<int> diceThree = [15, 26, 9, 21, 14, 20];
+  List<int> diceFour = [0, 32, 18, 25, 19, 12];
+  List<int> diceFive = [5, 30, 5, 5, 30, 30];
+  List<int> diceSix = [13, 7, 8, 2, 1, 6];
+  List<int> diceSeven = [4, 24, 4, 11, 31, 31];
+
+  blockerIndeces[0] = diceOne[Random().nextInt(6)];
+  blockerIndeces[1] = diceTwo[Random().nextInt(6)];
+  blockerIndeces[2] = diceThree[Random().nextInt(6)];
+  blockerIndeces[3] = diceFour[Random().nextInt(6)];
+  blockerIndeces[4] = diceFive[Random().nextInt(6)];
+  blockerIndeces[5] = diceSix[Random().nextInt(6)];
+  blockerIndeces[6] = diceSeven[Random().nextInt(6)];
+
+  return blockerIndeces;
+}
+
 // Main app Widget
 class GeominoesApp extends StatelessWidget {
   const GeominoesApp({super.key});
@@ -10,17 +34,17 @@ class GeominoesApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: HomePage(),
+      home: MainPage(),
     );
   }
 }
 
 // Home page (even though there's only one page)
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class MainPage extends StatefulWidget {
+  const MainPage({super.key});
 
   @override
-  State<HomePage> createState() => _MyHomePageState();
+  State<MainPage> createState() => MainPageState();
 }
 
 // Create a class for the red square
@@ -47,43 +71,241 @@ class RoundBox extends StatelessWidget {
   }
 }
 
+// Class for the dragged boxes
+class DragBox extends StatefulWidget {
+  final Offset initPos;
+  final Offset pos;
+  final Color itemColor;
+  final double width;
+  final int identifier;
+
+  const DragBox(this.initPos, this.pos, this.itemColor, this.width, this.identifier);
+
+  @override
+  DragBoxState createState() => DragBoxState();
+}
+
+class DragBoxState extends State<DragBox> {
+  Offset position = const Offset(0.0, 0.0);
+  bool cancelled = false;
+
+  @override
+  Widget build(BuildContext context) {
+    if(cancelled == true){
+      position = widget.initPos;
+    } else {
+      position = widget.pos;
+    }
+    return Positioned(
+      left: position.dx,
+      top: position.dy,
+      child: Draggable(
+        data: widget.identifier,
+        onDragCompleted: () {
+          setState(() {
+            cancelled = false;
+            position = widget.pos;
+          });
+        },
+        onDraggableCanceled: (velocity, offset) {
+          setState(() {
+            cancelled = true;
+          });
+        },
+        feedback: RoundBox(itemColor: widget.itemColor.withOpacity(0.2), width: widget.width * 0.9),
+        child: RoundBox(itemColor: widget.itemColor, width: widget.width),
+      )
+    );
+  }
+}
+
+
+class DragBoxTwo extends StatefulWidget {
+  final Offset initPos;
+  final Offset pos;
+  final Color itemColor;
+  final double width;
+  final int identifier;
+
+  const DragBoxTwo(this.initPos, this.pos, this.itemColor, this.width, this.identifier);
+
+  @override
+  DragBoxTwoState createState() => DragBoxTwoState();
+}
+
+class DragBoxTwoState extends State<DragBoxTwo> {
+  Offset position = const Offset(0.0, 0.0);
+  bool cancelled = false;
+
+  @override
+  Widget build(BuildContext context) {
+    if(cancelled == true){
+      position = widget.initPos;
+    } else {
+      position = widget.pos;
+    }
+    return Positioned(
+      left: position.dx,
+      top: position.dy,
+      child: Draggable(
+        data: widget.identifier,
+        onDragCompleted: () {
+          setState(() {
+            cancelled = false;
+            position = widget.pos;
+          });
+        },
+        onDraggableCanceled: (velocity, offset) {
+          setState(() {
+            cancelled = true;
+          });
+        },
+        feedback: Row(
+          children: <Widget> [
+            RoundBox(itemColor: widget.itemColor.withOpacity(0.2), width: widget.width * 0.9),
+            RoundBox(itemColor: widget.itemColor.withOpacity(0.2), width: widget.width * 0.9),
+          ]
+        ),
+        child: Row(
+          children: <Widget> [
+            RoundBox(itemColor: widget.itemColor, width: widget.width),
+            RoundBox(itemColor: Colors.white.withOpacity(1), width: 3,),
+            RoundBox(itemColor: widget.itemColor, width: widget.width),
+          ]
+        ),
+      )
+    );
+  }
+}
+
+
+class DragBoxThree extends StatefulWidget {
+  final Offset initPos;
+  final Offset pos;
+  final Color itemColor;
+  final double width;
+  final int identifier;
+
+  const DragBoxThree(this.initPos, this.pos, this.itemColor, this.width, this.identifier);
+
+  @override
+  DragBoxThreeState createState() => DragBoxThreeState();
+}
+
+class DragBoxThreeState extends State<DragBoxThree> {
+  Offset position = const Offset(0.0, 0.0);
+  bool cancelled = false;
+
+  @override
+  Widget build(BuildContext context) {
+    if(cancelled == true){
+      position = widget.initPos;
+    } else {
+      position = widget.pos;
+    }
+    return Positioned(
+      left: position.dx,
+      top: position.dy,
+      child: Draggable(
+        data: widget.identifier,
+        onDragCompleted: () {
+          setState(() {
+            cancelled = false;
+            position = widget.pos;
+          });
+        },
+        onDraggableCanceled: (velocity, offset) {
+          setState(() {
+            cancelled = true;
+          });
+        },
+        feedback: Row(
+          children: <Widget> [
+            RoundBox(itemColor: widget.itemColor.withOpacity(0.2), width: widget.width * 0.9),
+            RoundBox(itemColor: Colors.white.withOpacity(1), width: 3,),
+            RoundBox(itemColor: widget.itemColor.withOpacity(0.2), width: widget.width * 0.9),
+            RoundBox(itemColor: Colors.white.withOpacity(1), width: 3,),
+            RoundBox(itemColor: widget.itemColor.withOpacity(0.2), width: widget.width * 0.9),
+          ]
+        ),
+        child: Row(
+          children: <Widget> [
+            RoundBox(itemColor: widget.itemColor, width: widget.width),
+            RoundBox(itemColor: Colors.white.withOpacity(1), width: 3,),
+            RoundBox(itemColor: widget.itemColor, width: widget.width),
+            RoundBox(itemColor: Colors.white.withOpacity(1), width: 3,),
+            RoundBox(itemColor: widget.itemColor, width: widget.width),
+          ]
+        ),
+      )
+    );
+  }
+}
+
+
 // Contains the state (the meat of the page)
-class _MyHomePageState extends State<HomePage> {
-  List<List<bool>> grid = List.generate(7, (i) => List.generate(7, (j) => false));
+class MainPageState extends State<MainPage> {
+  
+  var gridPosList = List<Offset>.generate(36, (int index) => Offset(0.0, 0.0));
+  var draggableCurrentPosList = List<Offset>.generate(9, (int index) => Offset(0.0, 0.0));
+  var draggableInitPosList = List<Offset>.generate(9, (int index) => Offset(0.0, 0.0));
+  var draggableDraggedBool = false;
+  var prevScreenWidth = 0.0;
+  var prevScreenHeight = 0.0;
+
+  var blockerIndeces = getBlockerIndeces();
 
   @override
   Widget build(BuildContext context) {
 
     // Get screen dimensions to base the size off of
-    double wd = MediaQuery.of(context).size.width;
-    double ht = MediaQuery.of(context).size.height;
-    double gridDim = min(wd, ht) / 2;
-    int acceptedData = 0;
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    double gridDim = screenHeight / 2.5;
+    double gridLeft = (screenWidth - gridDim) / 2;
+    double gridTop = (screenHeight - gridDim) / 6;
+    double gridBottom = gridTop + gridDim;
+    double bottomSectionHeight = screenHeight - gridBottom;
+    const spacer = 3.0;
+    double gridSquareWidth = (gridDim - (5 * spacer)) / 6;
+    
+    // Get positions of grid squares
+    for(var i = 0; i < 36; i++) {
+      gridPosList[i] = Offset(gridLeft + ((i % 6) * (gridSquareWidth + spacer)), 
+                              gridTop + ((i ~/ 6) * (gridSquareWidth + spacer)));
+    }
 
-    return Scaffold(
-      body: Center(
-        // Column allows for vertical positioning
-        child: Column(
-          children: [
-            // Empty box for margin above grid (there's probably a better way to do this)
-            SizedBox(
-              width: gridDim / 4,
-              height: gridDim / 4
-            ),
+    // Set positions of draggables if this is the initialization
+    if (!draggableDraggedBool || (screenWidth != prevScreenWidth || screenHeight != prevScreenHeight)) {
+      for(var i = 0; i < 9; i++) {
+        double x = (i % 3) * (screenWidth / 3) + (((screenWidth / 3) - gridSquareWidth) / 2);
+        double y = (gridBottom + (((i ~/ 3) + (1 / 2)) * (bottomSectionHeight / 3)) - (gridSquareWidth / 2));
+        draggableInitPosList[i] = Offset(x, y);
+        draggableCurrentPosList[i] = Offset(x, y);
+      }
+    }
 
-            // Box to hold the grid - maybe place inside of a stack? IDK
-            SizedBox(
-              width: gridDim,
-              height: gridDim,
+    prevScreenHeight = screenHeight;
+    prevScreenWidth = screenWidth;
 
-              // The grid itself
-              child: GridView.count(
-                primary:false,
-                crossAxisSpacing: 3,
-                mainAxisSpacing: 3,
-                crossAxisCount: 7,
-                children: <Widget> [
-                  DragTarget<int>(
+    return Stack(
+      children: <Widget>[
+        // Grid
+        Positioned(
+          left: gridLeft,
+          top: gridTop,
+          child: SizedBox(
+            width: gridDim,
+            height: gridDim,
+            child: GridView(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 6,
+                crossAxisSpacing: spacer,
+                mainAxisSpacing: spacer,
+              ),
+              children: List<Widget>.generate(36, (int i) {
+                return Builder(builder: (BuildContext context) {
+                  return DragTarget<int> (
                     builder: (
                       BuildContext context,
                       List<dynamic> accepted,
@@ -91,108 +313,42 @@ class _MyHomePageState extends State<HomePage> {
                     ) {
                       return Container(
                         decoration: BoxDecoration(
-                          color: Colors.grey,
+                          color: blockerIndeces.contains(i) ? Colors.white : Colors.grey,
                           borderRadius: BorderRadius.circular(4),
-                        ), 
-                        child: Text('$acceptedData'),
+                        ),
                       );
                     },
-                    onAccept: (int data) {
-                      setState(() {
-                        acceptedData += data;
-                      });
+                    onAccept: (int ID) {
+                      if (!blockerIndeces.contains(i)) {
+                        setState(() {
+                          draggableDraggedBool = true;
+                          draggableCurrentPosList[ID] = gridPosList[i];
+                        });
+                      }
                     },
-                  ),
-                  Container(
-                     margin: const EdgeInsets.all(2),
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),                 
-                  Container(
-                    margin: const EdgeInsets.all(2),
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),              
-                  Container(
-                    margin: const EdgeInsets.all(2),
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.all(2),
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.all(2),
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),                 
-                  Container(
-                    margin: const EdgeInsets.all(2),
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),              
-                  Container(
-                    margin: const EdgeInsets.all(2),
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),              
-                  Container(
-                    margin: const EdgeInsets.all(2),
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.all(2),
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),                 
-                  Container(
-                    margin: const EdgeInsets.all(2),
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),              
-                  Container(
-                    margin: const EdgeInsets.all(2),
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
-                ]
-              ),
+                  );
+                });
+              }),
             ),
-
-            // The square that will be dragged
-            Draggable<int>(
-              data: 10,
-              feedback: RoundBox(itemColor: Colors.teal.withOpacity(0.2), width: gridDim / 7,),
-              child: RoundBox(itemColor: Colors.teal, width: gridDim / 7,)
-            ),
-          ],
+          )
         ),
-      ),
+
+        // Pieces
+        DragBox(draggableInitPosList[0], draggableCurrentPosList[0], Colors.red, gridSquareWidth, 0),
+        
+        DragBoxTwo(draggableInitPosList[1], draggableCurrentPosList[1], Colors.orange, gridSquareWidth, 1),
+
+        DragBoxThree(draggableInitPosList[2], draggableCurrentPosList[2], Colors.yellow, gridSquareWidth, 2),
+        
+        DragBox(draggableInitPosList[3], draggableCurrentPosList[3], Colors.green, gridSquareWidth, 3),
+        
+        DragBox(draggableInitPosList[4], draggableCurrentPosList[4], Colors.teal, gridSquareWidth, 4),
+        DragBox(draggableInitPosList[5], draggableCurrentPosList[5], Colors.cyan, gridSquareWidth, 5),
+        DragBox(draggableInitPosList[6], draggableCurrentPosList[6], Colors.blue, gridSquareWidth, 6),
+        DragBox(draggableInitPosList[7], draggableCurrentPosList[7], Colors.indigo, gridSquareWidth, 7),
+        DragBox(draggableInitPosList[8], draggableCurrentPosList[8], Colors.purple, gridSquareWidth, 8),
+
+      ]
     );
   }
 }
