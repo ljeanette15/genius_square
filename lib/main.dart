@@ -109,8 +109,8 @@ class DragBoxState extends State<DragBox> {
               details.offset.dy > widget.gridTop && details.offset.dy < widget.gridBottom) {
                 setState(() {
                   // Determine where it needs to be in order to lock to the grid
-                  double xpos = details.offset.dx - ((details.offset.dx - widget.gridLeft) % (widget.width + widget.spacer));
-                  double ypos = details.offset.dy - ((details.offset.dy - widget.gridTop) % (widget.width + widget.spacer));
+                  double xpos = widget.gridLeft + (((details.offset.dx - widget.gridLeft) / (widget.width + widget.spacer)).round()) * (widget.width + widget.spacer);
+                  double ypos = widget.gridTop + (((details.offset.dy - widget.gridTop) / (widget.width + widget.spacer)).round()) * (widget.width + widget.spacer);
                   position = Offset(xpos, ypos);
                   dragEnded = true;
                 });
