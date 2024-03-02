@@ -67,6 +67,9 @@ class MainPageState extends State<MainPage> {
       }
     }
 
+    
+    print(occupied.length);
+
     prevScreenHeight = screenHeight;
     prevScreenWidth = screenWidth;
 
@@ -100,15 +103,139 @@ class MainPageState extends State<MainPage> {
         ),
 
         // Pieces
-        BigR(draggableInitPosList[0], Colors.red, gridSquareWidth, spacer, gridLeft, gridRight, gridTop, gridBottom, blockerIndeces, occupied, 0),
-        TDragBox(draggableInitPosList[1], Colors.orange, gridSquareWidth, spacer, gridLeft, gridRight, gridTop, gridBottom, blockerIndeces, occupied, 1),
-        SDragBox(draggableInitPosList[2], Colors.yellow, gridSquareWidth, spacer, gridLeft, gridRight, gridTop, gridBottom, blockerIndeces, occupied, 2),
-        QuadDragBox(draggableInitPosList[3], Colors.green, gridSquareWidth, spacer, gridLeft, gridRight, gridTop, gridBottom, blockerIndeces, occupied, 3),
-        BigDragBox(draggableInitPosList[4], Colors.teal, gridSquareWidth, spacer, gridLeft, gridRight, gridTop, gridBottom, blockerIndeces, occupied, 4),
-        SmallR(draggableInitPosList[5], Colors.cyan, gridSquareWidth, spacer, gridLeft, gridRight, gridTop, gridBottom, blockerIndeces, occupied, 5),
-        SingleDragBox(draggableInitPosList[6], Colors.blue, gridSquareWidth, spacer, gridLeft, gridRight, gridTop, gridBottom, blockerIndeces, occupied, 6),
-        DoubleDragBox(draggableInitPosList[7], Colors.indigo, gridSquareWidth, spacer, gridLeft, gridRight, gridTop, gridBottom, blockerIndeces, occupied, 7),
-        TripleDragBox(draggableInitPosList[8], Colors.purple, gridSquareWidth, spacer, gridLeft, gridRight, gridTop, gridBottom, blockerIndeces, occupied, 8),
+        BigR(
+          () {setState(() {
+            print("Updated");
+          });}, 
+          draggableInitPosList[0], 
+          Colors.red, 
+          gridSquareWidth, 
+          spacer, gridLeft, 
+          gridRight, 
+          gridTop, 
+          gridBottom, 
+          blockerIndeces, 
+          occupied, 
+          0),
+        TDragBox(
+          () {setState(() {
+            print("Updated");
+          });}, 
+          draggableInitPosList[1], 
+          Colors.orange, 
+          gridSquareWidth, 
+          spacer, 
+          gridLeft, 
+          gridRight, 
+          gridTop, 
+          gridBottom, 
+          blockerIndeces, 
+          occupied, 
+          1),
+        SDragBox(
+          () {setState(() {
+            print("Updated");
+          });}, 
+          draggableInitPosList[2], 
+          Colors.yellow, 
+          gridSquareWidth, 
+          spacer, 
+          gridLeft, 
+          gridRight, 
+          gridTop, 
+          gridBottom, 
+          blockerIndeces, 
+          occupied, 
+          2),
+        QuadDragBox(
+          () {setState(() {
+            print("Updated");
+          });}, 
+          draggableInitPosList[3], 
+          Colors.green, 
+          gridSquareWidth, 
+          spacer, 
+          gridLeft, 
+          gridRight, 
+          gridTop, 
+          gridBottom, 
+          blockerIndeces, 
+          occupied, 
+          3),
+        BigDragBox(
+          () {setState(() {
+            print("Updated");
+          });},           
+          draggableInitPosList[4], 
+          Colors.teal, 
+          gridSquareWidth, 
+          spacer, 
+          gridLeft, 
+          gridRight, 
+          gridTop, 
+          gridBottom, 
+          blockerIndeces, 
+          occupied, 
+          4),
+        SmallR(
+          () {setState(() {
+            print("Updated");
+          });},          
+          draggableInitPosList[5], 
+          Colors.cyan, 
+          gridSquareWidth, 
+          spacer, 
+          gridLeft, 
+          gridRight, 
+          gridTop, 
+          gridBottom, 
+          blockerIndeces, 
+          occupied, 
+          5),
+        SingleDragBox(
+          () {setState(() {
+            print("Updated");
+          });},           
+          draggableInitPosList[6], 
+          Colors.blue, 
+          gridSquareWidth, 
+          spacer, 
+          gridLeft, 
+          gridRight, 
+          gridTop, 
+          gridBottom, 
+          blockerIndeces, 
+          occupied, 
+          6),
+        DoubleDragBox(
+          () {setState(() {
+            print("Updated");
+          });}, 
+          draggableInitPosList[7], 
+          Colors.indigo, 
+          gridSquareWidth, 
+          spacer, gridLeft, 
+          gridRight, gridTop, 
+          gridBottom, 
+          blockerIndeces, 
+          occupied, 
+          7
+        ),
+        TripleDragBox(
+          () {setState(() {
+            print("Updated");
+          });}, 
+          draggableInitPosList[8], 
+          Colors.purple, 
+          gridSquareWidth, 
+          spacer, 
+          gridLeft, 
+          gridRight, 
+          gridTop, 
+          gridBottom, 
+          blockerIndeces, 
+          occupied, 
+          8),
 
       ]
     );

@@ -38,8 +38,9 @@ class SingleDragBox extends StatefulWidget {
   final List<int> occupied;
   final int identifier;
 
+  final Function() onUpdate;
 
-  const SingleDragBox(this.initPos, this.itemColor, this.width, this.spacer, this.gridLeft, this.gridRight, this.gridTop, this.gridBottom, this.blockerPosList, this.occupied, this.identifier);
+  const SingleDragBox(this.onUpdate, this.initPos, this.itemColor, this.width, this.spacer, this.gridLeft, this.gridRight, this.gridTop, this.gridBottom, this.blockerPosList, this.occupied, this.identifier);
 
   @override
   SingleDragBoxState createState() => SingleDragBoxState();
@@ -60,48 +61,65 @@ class SingleDragBoxState extends State<SingleDragBox> {
       top: position.dy,
       child: Draggable(
         data: widget.identifier,
-        onDragEnd: (details) {
-          // If the block is in the grid at all
-          if (details.offset.dx > widget.gridLeft && details.offset.dx < widget.gridRight &&
-              details.offset.dy > widget.gridTop && details.offset.dy < widget.gridBottom) {
+
+          onDragStarted: () {
+            // Remove previous position from occupied list
+            if (widget.occupied.contains(prevIndex)) {
+              widget.occupied.remove(prevIndex);
+              widget.onUpdate();
+            }
+          },
+
+          // When the drag ends, calculate where it is on the grid then decide if it should be dropped or returned back
+          onDragEnd: (details) {
             // Determine what index of the grid this spot is (to check whether it's open or not)
-            int xIndex = ((details.offset.dx - widget.gridLeft) / (widget.width + widget.spacer)).round();
-            int yIndex = ((details.offset.dy - widget.gridTop) / (widget.width + widget.spacer)).round();
+            double xPos = details.offset.dx - widget.gridLeft;
+            int xIndex = (xPos / (widget.width + widget.spacer)).round();
+            double yPos = (details.offset.dy - widget.gridTop);
+            int yIndex = (yPos / (widget.width + widget.spacer)).round();
             int index = (6 * yIndex) + xIndex;
 
-            if (!widget.blockerPosList.contains(index) && !widget.occupied.contains(index)) {
-              setState(() {
-                // Determine where it needs to be in order to lock to the grid
-                double xpos = widget.gridLeft + (((details.offset.dx - widget.gridLeft) / (widget.width + widget.spacer)).round()) * (widget.width + widget.spacer);
-                double ypos = widget.gridTop + (((details.offset.dy - widget.gridTop) / (widget.width + widget.spacer)).round()) * (widget.width + widget.spacer);
+            double gridDimPadded = widget.gridRight - widget.gridLeft - (widget.width / 2);
+            double zeroPadded = 0.0 - (widget.width / 2);
+
+            // Check if the block is in the grid at all
+            if (xPos < gridDimPadded && xPos > zeroPadded &&
+                yPos < gridDimPadded && yPos > zeroPadded) {
+            
+              // If the square isn't on a blocker or occupied spot
+              if (!widget.blockerPosList.contains(index) && !widget.occupied.contains(index)) {
+                
+                setState(() {
+                  
+                  // Determine where it needs to be in order to lock to the grid
+                  double xpos = widget.gridLeft + (((details.offset.dx - widget.gridLeft) / (widget.width + widget.spacer)).round()) * (widget.width + widget.spacer);
+                  double ypos = widget.gridTop + (((details.offset.dy - widget.gridTop) / (widget.width + widget.spacer)).round()) * (widget.width + widget.spacer);
+                
+                  position = Offset(xpos, ypos);
+                  dragEnded = true;
+
+                  widget.occupied.add(index);
+                  widget.onUpdate();
+                  
+                  prevIndex = index;
+                });
               
-                position = Offset(xpos, ypos);
-                dragEnded = true;
-                widget.occupied.add(index);
-                if (widget.occupied.contains(prevIndex)) {
-                  widget.occupied.remove(prevIndex);
-                }
-                prevIndex = index;
-              });
+              // If the spot is occupied, return to original position
+              } else {
+                setState(() {
+                  position = widget.initPos;
+                  dragEnded = false;
+                });
+              }
+
+            // If the square is dropped outside the grid, return to original position
             } else {
               setState(() {
                 position = widget.initPos;
                 dragEnded = false;
-                if (widget.occupied.contains(prevIndex)) {
-                  widget.occupied.remove(prevIndex);
-                }
               });
             }
-          } else {
-            setState(() {
-              position = widget.initPos;
-              dragEnded = false;
-              if (widget.occupied.contains(prevIndex)) {
-                widget.occupied.remove(prevIndex);
-              }
-            });
-          }
-        },
+          },
         feedback: RoundBox(itemColor: widget.itemColor.withOpacity(0.2), width: widget.width * 0.9),
         child: RoundBox(itemColor: widget.itemColor, width: widget.width),
       )
@@ -124,8 +142,9 @@ class DoubleDragBox extends StatefulWidget {
   final List<int> occupied;
   final int identifier;
 
+  final Function() onUpdate;
 
-  const DoubleDragBox(this.initPos, this.itemColor, this.width, this.spacer, this.gridLeft, this.gridRight, this.gridTop, this.gridBottom, this.blockerPosList, this.occupied, this.identifier);
+  DoubleDragBox(this.onUpdate, this.initPos, this.itemColor, this.width, this.spacer, this.gridLeft, this.gridRight, this.gridTop, this.gridBottom, this.blockerPosList, this.occupied, this.identifier);
 
   @override
   DoubleDragBoxState createState() => DoubleDragBoxState();
@@ -165,30 +184,43 @@ class DoubleDragBoxState extends State<DoubleDragBox> {
             // Remove previous position from occupied list
             if (widget.occupied.contains(prevIndex)) {
               widget.occupied.remove(prevIndex);
+              widget.onUpdate();
             }
             if (widget.occupied.contains(prevIndex2)) {
               widget.occupied.remove(prevIndex2);
+              widget.onUpdate();
             }
           },
 
           // When the drag ends, calculate where it is on the grid then decide if it should be dropped or returned back
           onDragEnd: (details) {
+            
             if (!rotated) {
+
+              // Determine what index of the grid this spot is (to check whether it's open or not)
+              double xPos = details.offset.dx - widget.gridLeft;
+              int xIndex = (xPos / (widget.width + widget.spacer)).round();
+              double yPos = (details.offset.dy - widget.gridTop);
+              int yIndex = (yPos / (widget.width + widget.spacer)).round();
+              int index = (6 * yIndex) + xIndex;
+
+              double xPos2 = (details.offset.dx + widget.spacer + widget.width - widget.gridLeft);
+              int xIndex2 = (xPos2 / (widget.width + widget.spacer)).round();
+              double yPos2 = (details.offset.dy - widget.gridTop);
+              int yIndex2 = (yPos2 / (widget.width + widget.spacer)).round();
+              int index2 = (6 * yIndex2) + xIndex2;
+
+              double gridDimPadded = widget.gridRight - widget.gridLeft - (widget.width / 2);
+              double zeroPadded = 0.0 - (widget.width / 2);
+
               // Check if the block is in the grid at all
-              if (details.offset.dx > (widget.gridLeft - widget.width / 2) && ((details.offset.dx + widget.spacer + widget.width) < widget.gridRight - widget.width / 2) &&
-                  details.offset.dy > (widget.gridTop - widget.width / 2) && details.offset.dy < (widget.gridBottom - widget.width / 2)) {
-                
-                // Determine what index of the grid this spot is (to check whether it's open or not)
-                int xIndex = ((details.offset.dx - widget.gridLeft) / (widget.width + widget.spacer)).round();
-                int yIndex = ((details.offset.dy - widget.gridTop) / (widget.width + widget.spacer)).round();
-                int index = (6 * yIndex) + xIndex;
-
-                int xIndex2 = (((details.offset.dx + widget.spacer + widget.width) - widget.gridLeft) / (widget.width + widget.spacer)).round();
-                int yIndex2 = ((details.offset.dy - widget.gridTop) / (widget.width + widget.spacer)).round();
-                int index2 = (6 * yIndex2) + xIndex2;
-
+              if (xPos < gridDimPadded && xPos > zeroPadded && xPos2 < gridDimPadded && xPos2 > zeroPadded &&
+                  yPos < gridDimPadded && yPos > zeroPadded && yPos2 < gridDimPadded && yPos2 > zeroPadded) {
+              
                 // If the square isn't on a blocker or occupied spot
-                if (!widget.blockerPosList.contains(index) && !widget.occupied.contains(index) && !widget.blockerPosList.contains(index2) && !widget.occupied.contains(index2)) {
+                if (!widget.blockerPosList.contains(index) && !widget.occupied.contains(index) && 
+                    !widget.blockerPosList.contains(index2) && !widget.occupied.contains(index2)) {
+                  
                   setState(() {
                     
                     // Determine where it needs to be in order to lock to the grid
@@ -197,8 +229,11 @@ class DoubleDragBoxState extends State<DoubleDragBox> {
                   
                     position = Offset(xpos, ypos);
                     dragEnded = true;
+
                     widget.occupied.add(index);
                     widget.occupied.add(index2);
+
+                    widget.onUpdate();
                     
                     prevIndex = index;
                     prevIndex2 = index2;
@@ -219,24 +254,32 @@ class DoubleDragBoxState extends State<DoubleDragBox> {
                   dragEnded = false;
                 });
               }
-
             } else { // Rotated
 
+              // Determine what index of the grid this spot is (to check whether it's open or not)
+              double xPos = details.offset.dx - widget.gridLeft;
+              int xIndex = (xPos / (widget.width + widget.spacer)).round();
+              double yPos = (details.offset.dy - widget.gridTop);
+              int yIndex = (yPos / (widget.width + widget.spacer)).round();
+              int index = (6 * yIndex) + xIndex;
+
+              double xPos2 = (details.offset.dx - widget.gridLeft);
+              int xIndex2 = (xPos2 / (widget.width + widget.spacer)).round();
+              double yPos2 = (details.offset.dy + widget.spacer + widget.width - widget.gridTop);
+              int yIndex2 = (yPos2 / (widget.width + widget.spacer)).round();
+              int index2 = (6 * yIndex2) + xIndex2;
+
+              double gridDimPadded = (widget.gridRight - widget.gridLeft) - (widget.width / 2);
+              double zeroPadded = 0.0 - (widget.width / 2);
+
               // Check if the block is in the grid at all
-              if (details.offset.dx > (widget.gridLeft - widget.width / 2) && (details.offset.dx < widget.gridRight - widget.width / 2) &&
-                  details.offset.dy > (widget.gridTop - widget.width / 2) && ((details.offset.dy + widget.spacer + widget.width) < widget.gridBottom - widget.width / 2)) {
-                
-                // Determine what index of the grid this spot is (to check whether it's open or not)
-                int xIndex = ((details.offset.dx - widget.gridLeft) / (widget.width + widget.spacer)).round();
-                int yIndex = ((details.offset.dy - widget.gridTop) / (widget.width + widget.spacer)).round();
-                int index = (6 * yIndex) + xIndex;
-
-                int xIndex2 = ((details.offset.dx - widget.gridLeft) / (widget.width + widget.spacer)).round();
-                int yIndex2 = ((details.offset.dy + widget.spacer + widget.width - widget.gridTop) / (widget.width + widget.spacer)).round();
-                int index2 = (6 * yIndex2) + xIndex2;
-
+              if (xPos < gridDimPadded && xPos > zeroPadded && xPos2 < gridDimPadded && xPos2 > zeroPadded &&
+                  yPos < gridDimPadded && yPos > zeroPadded && yPos2 < gridDimPadded && yPos2 > zeroPadded) {
+              
                 // If the square isn't on a blocker or occupied spot
-                if (!widget.blockerPosList.contains(index) && !widget.occupied.contains(index) && !widget.blockerPosList.contains(index2) && !widget.occupied.contains(index2)) {
+                if (!widget.blockerPosList.contains(index) && !widget.occupied.contains(index) && 
+                    !widget.blockerPosList.contains(index2) && !widget.occupied.contains(index2)) {
+                  
                   setState(() {
                     
                     // Determine where it needs to be in order to lock to the grid
@@ -245,12 +288,13 @@ class DoubleDragBoxState extends State<DoubleDragBox> {
                   
                     position = Offset(xpos, ypos);
                     dragEnded = true;
+
                     widget.occupied.add(index);
                     widget.occupied.add(index2);
-        
+                    widget.onUpdate();
+                    
                     prevIndex = index;
                     prevIndex2 = index2;
-                  
                   });
                 
                 // If the spot is occupied, return to original position
@@ -268,7 +312,7 @@ class DoubleDragBoxState extends State<DoubleDragBox> {
                   dragEnded = false;
                 });
               }
-            }
+            } 
           },
 
           feedback:         
@@ -338,8 +382,9 @@ class TripleDragBox extends StatefulWidget {
   final List<int> occupied;
   final int identifier;
 
+  final Function() onUpdate;
 
-  const TripleDragBox(this.initPos, this.itemColor, this.width, this.spacer, this.gridLeft, this.gridRight, this.gridTop, this.gridBottom, this.blockerPosList, this.occupied, this.identifier);
+  const TripleDragBox(this.onUpdate, this.initPos, this.itemColor, this.width, this.spacer, this.gridLeft, this.gridRight, this.gridTop, this.gridBottom, this.blockerPosList, this.occupied, this.identifier);
 
   @override
   TripleDragBoxState createState() => TripleDragBoxState();
@@ -380,37 +425,54 @@ class TripleDragBoxState extends State<TripleDragBox> {
             // Remove previous position from occupied list
             if (widget.occupied.contains(prevIndex)) {
               widget.occupied.remove(prevIndex);
+              widget.onUpdate();
             }
             if (widget.occupied.contains(prevIndex2)) {
               widget.occupied.remove(prevIndex2);
+              widget.onUpdate();
             }
             if (widget.occupied.contains(prevIndex3)) {
               widget.occupied.remove(prevIndex3);
+              widget.onUpdate();
             }
           },
 
           // When the drag ends, calculate where it is on the grid then decide if it should be dropped or returned back
           onDragEnd: (details) {
+            
             if (!rotated) {
-              // Check if the block is in the grid at all
-              if (details.offset.dx > (widget.gridLeft - widget.width / 2) && ((details.offset.dx + (2 * widget.spacer) + (2 * widget.width)) < widget.gridRight - widget.width / 2) &&
-                  details.offset.dy > (widget.gridTop - widget.width / 2) && details.offset.dy < (widget.gridBottom - widget.width / 2)) {
-                
-                // Determine what index of the grid this spot is (to check whether it's open or not)
-                int xIndex = ((details.offset.dx - widget.gridLeft) / (widget.width + widget.spacer)).round();
-                int yIndex = ((details.offset.dy - widget.gridTop) / (widget.width + widget.spacer)).round();
-                int index = (6 * yIndex) + xIndex;
 
-                int xIndex2 = (((details.offset.dx + widget.spacer + widget.width) - widget.gridLeft) / (widget.width + widget.spacer)).round();
-                int yIndex2 = ((details.offset.dy - widget.gridTop) / (widget.width + widget.spacer)).round();
-                int index2 = (6 * yIndex2) + xIndex2;
+              // Determine what index of the grid this spot is (to check whether it's open or not)
+              double xPos = details.offset.dx - widget.gridLeft;
+              int xIndex = (xPos / (widget.width + widget.spacer)).round();
+              double yPos = (details.offset.dy - widget.gridTop);
+              int yIndex = (yPos / (widget.width + widget.spacer)).round();
+              int index = (6 * yIndex) + xIndex;
+
+              double xPos2 = (details.offset.dx + widget.spacer + widget.width - widget.gridLeft);
+              int xIndex2 = (xPos2 / (widget.width + widget.spacer)).round();
+              double yPos2 = (details.offset.dy - widget.gridTop);
+              int yIndex2 = (yPos2 / (widget.width + widget.spacer)).round();
+              int index2 = (6 * yIndex2) + xIndex2;
+
+              double xPos3 = (details.offset.dx + 2 * (widget.spacer + widget.width) - widget.gridLeft);
+              int xIndex3 = (xPos3 / (widget.width + widget.spacer)).round();
+              double yPos3 = (details.offset.dy - widget.gridTop);
+              int yIndex3 = (yPos3 / (widget.width + widget.spacer)).round();
+              int index3 = (6 * yIndex3) + xIndex3;
+
+              double gridDimPadded = widget.gridRight - widget.gridLeft - (widget.width / 2);
+              double zeroPadded = 0.0 - (widget.width / 2);
+
+              // Check if the block is in the grid at all
+              if (xPos < gridDimPadded && xPos > zeroPadded && xPos2 < gridDimPadded && xPos2 > zeroPadded && xPos3 < gridDimPadded && xPos3 > zeroPadded &&
+                  yPos < gridDimPadded && yPos > zeroPadded && yPos2 < gridDimPadded && yPos2 > zeroPadded && yPos3 < gridDimPadded && yPos3 > zeroPadded) {
               
-                int xIndex3 = (((details.offset.dx + (2 * widget.spacer) + (2 * widget.width)) - widget.gridLeft) / (widget.width + widget.spacer)).round();
-                int yIndex3 = ((details.offset.dy - widget.gridTop) / (widget.width + widget.spacer)).round();
-                int index3 = (6 * yIndex3) + xIndex3;
-
                 // If the square isn't on a blocker or occupied spot
-                if (!widget.blockerPosList.contains(index) && !widget.occupied.contains(index) && !widget.blockerPosList.contains(index2) && !widget.occupied.contains(index2) && !widget.blockerPosList.contains(index3) && !widget.occupied.contains(index3)) {
+                if (!widget.blockerPosList.contains(index) && !widget.occupied.contains(index) && 
+                    !widget.blockerPosList.contains(index2) && !widget.occupied.contains(index2) && 
+                    !widget.blockerPosList.contains(index3) && !widget.occupied.contains(index3)) {
+                  
                   setState(() {
                     
                     // Determine where it needs to be in order to lock to the grid
@@ -419,9 +481,11 @@ class TripleDragBoxState extends State<TripleDragBox> {
                   
                     position = Offset(xpos, ypos);
                     dragEnded = true;
+
                     widget.occupied.add(index);
                     widget.occupied.add(index2);
                     widget.occupied.add(index3);
+                    widget.onUpdate();
                     
                     prevIndex = index;
                     prevIndex2 = index2;
@@ -443,28 +507,39 @@ class TripleDragBoxState extends State<TripleDragBox> {
                   dragEnded = false;
                 });
               }
+            } else {
 
-            } else { // Rotated
+              // Determine what index of the grid this spot is (to check whether it's open or not)
+              double xPos = details.offset.dx - widget.gridLeft;
+              int xIndex = (xPos / (widget.width + widget.spacer)).round();
+              double yPos = (details.offset.dy - widget.gridTop);
+              int yIndex = (yPos / (widget.width + widget.spacer)).round();
+              int index = (6 * yIndex) + xIndex;
+
+              double xPos2 = (details.offset.dx - widget.gridLeft);
+              int xIndex2 = (xPos2 / (widget.width + widget.spacer)).round();
+              double yPos2 = (details.offset.dy + widget.spacer + widget.width - widget.gridTop);
+              int yIndex2 = (yPos2 / (widget.width + widget.spacer)).round();
+              int index2 = (6 * yIndex2) + xIndex2;
+
+              double xPos3 = (details.offset.dx - widget.gridLeft);
+              int xIndex3 = (xPos3 / (widget.width + widget.spacer)).round();
+              double yPos3 = (details.offset.dy + 2 * (widget.spacer + widget.width) - widget.gridTop);
+              int yIndex3 = (yPos3 / (widget.width + widget.spacer)).round();
+              int index3 = (6 * yIndex3) + xIndex3;
+
+              double gridDimPadded = (widget.gridRight - widget.gridLeft) - (widget.width / 2);
+              double zeroPadded = 0.0 - (widget.width / 2);
 
               // Check if the block is in the grid at all
-              if (details.offset.dx > (widget.gridLeft - widget.width / 2) && (details.offset.dx < widget.gridRight - widget.width / 2) &&
-                  details.offset.dy > (widget.gridTop - widget.width / 2) && ((details.offset.dy + (2 * widget.spacer) + (2 * widget.width)) < widget.gridBottom - widget.width / 2)) {
-                
-                // Determine what index of the grid this spot is (to check whether it's open or not)
-                int xIndex = ((details.offset.dx - widget.gridLeft) / (widget.width + widget.spacer)).round();
-                int yIndex = ((details.offset.dy - widget.gridTop) / (widget.width + widget.spacer)).round();
-                int index = (6 * yIndex) + xIndex;
-
-                int xIndex2 = ((details.offset.dx - widget.gridLeft) / (widget.width + widget.spacer)).round();
-                int yIndex2 = ((details.offset.dy + widget.spacer + widget.width - widget.gridTop) / (widget.width + widget.spacer)).round();
-                int index2 = (6 * yIndex2) + xIndex2;
-
-                int xIndex3 = ((details.offset.dx - widget.gridLeft) / (widget.width + widget.spacer)).round();
-                int yIndex3 = ((details.offset.dy + (2 * widget.spacer) + (2 * widget.width) - widget.gridTop) / (widget.width + widget.spacer)).round();
-                int index3 = (6 * yIndex3) + xIndex3;
-
+              if (xPos < gridDimPadded && xPos > zeroPadded && xPos2 < gridDimPadded && xPos2 > zeroPadded && xPos3 < gridDimPadded && xPos3 > zeroPadded &&
+                  yPos < gridDimPadded && yPos > zeroPadded && yPos2 < gridDimPadded && yPos2 > zeroPadded && yPos3 < gridDimPadded && yPos3 > zeroPadded) {
+              
                 // If the square isn't on a blocker or occupied spot
-                if (!widget.blockerPosList.contains(index) && !widget.occupied.contains(index) && !widget.blockerPosList.contains(index2) && !widget.occupied.contains(index2) && !widget.blockerPosList.contains(index3) && !widget.occupied.contains(index3)) {
+                if (!widget.blockerPosList.contains(index) && !widget.occupied.contains(index) && 
+                    !widget.blockerPosList.contains(index2) && !widget.occupied.contains(index2) && 
+                    !widget.blockerPosList.contains(index3) && !widget.occupied.contains(index3)) {
+                  
                   setState(() {
                     
                     // Determine where it needs to be in order to lock to the grid
@@ -473,14 +548,15 @@ class TripleDragBoxState extends State<TripleDragBox> {
                   
                     position = Offset(xpos, ypos);
                     dragEnded = true;
+
                     widget.occupied.add(index);
                     widget.occupied.add(index2);
                     widget.occupied.add(index3);
-        
+                    widget.onUpdate();
+                    
                     prevIndex = index;
                     prevIndex2 = index2;
                     prevIndex3 = index3;
-                  
                   });
                 
                 // If the spot is occupied, return to original position
@@ -498,7 +574,7 @@ class TripleDragBoxState extends State<TripleDragBox> {
                   dragEnded = false;
                 });
               }
-            }
+            } 
           },
           
           feedback:         
@@ -576,8 +652,9 @@ class QuadDragBox extends StatefulWidget {
   final List<int> occupied;
   final int identifier;
 
+  final Function() onUpdate;
 
-  const QuadDragBox(this.initPos, this.itemColor, this.width, this.spacer, this.gridLeft, this.gridRight, this.gridTop, this.gridBottom, this.blockerPosList, this.occupied, this.identifier);
+  const QuadDragBox(this.onUpdate, this.initPos, this.itemColor, this.width, this.spacer, this.gridLeft, this.gridRight, this.gridTop, this.gridBottom, this.blockerPosList, this.occupied, this.identifier);
 
   @override
   QuadDragBoxState createState() => QuadDragBoxState();
@@ -619,44 +696,65 @@ class QuadDragBoxState extends State<QuadDragBox> {
             // Remove previous position from occupied list
             if (widget.occupied.contains(prevIndex)) {
               widget.occupied.remove(prevIndex);
+              widget.onUpdate();
             }
             if (widget.occupied.contains(prevIndex2)) {
               widget.occupied.remove(prevIndex2);
+              widget.onUpdate();
             }
             if (widget.occupied.contains(prevIndex3)) {
               widget.occupied.remove(prevIndex3);
+              widget.onUpdate();
             }
             if (widget.occupied.contains(prevIndex4)) {
               widget.occupied.remove(prevIndex4);
+              widget.onUpdate();
             }
           },
 
           // When the drag ends, calculate where it is on the grid then decide if it should be dropped or returned back
           onDragEnd: (details) {
+            
             if (!rotated) {
-              // Check if the block is in the grid at all
-              if (details.offset.dx > (widget.gridLeft - widget.width / 2) && ((details.offset.dx + (3 * widget.spacer) + (3 * widget.width)) < widget.gridRight - widget.width / 2) &&
-                  details.offset.dy > (widget.gridTop - widget.width / 2) && details.offset.dy < (widget.gridBottom - widget.width / 2)) {
-                
-                // Determine what index of the grid this spot is (to check whether it's open or not)
-                int xIndex = ((details.offset.dx - widget.gridLeft) / (widget.width + widget.spacer)).round();
-                int yIndex = ((details.offset.dy - widget.gridTop) / (widget.width + widget.spacer)).round();
-                int index = (6 * yIndex) + xIndex;
 
-                int xIndex2 = (((details.offset.dx + widget.spacer + widget.width) - widget.gridLeft) / (widget.width + widget.spacer)).round();
-                int yIndex2 = ((details.offset.dy - widget.gridTop) / (widget.width + widget.spacer)).round();
-                int index2 = (6 * yIndex2) + xIndex2;
+              // Determine what index of the grid this spot is (to check whether it's open or not)
+              double xPos = details.offset.dx - widget.gridLeft;
+              int xIndex = (xPos / (widget.width + widget.spacer)).round();
+              double yPos = (details.offset.dy - widget.gridTop);
+              int yIndex = (yPos / (widget.width + widget.spacer)).round();
+              int index = (6 * yIndex) + xIndex;
+
+              double xPos2 = (details.offset.dx + widget.spacer + widget.width - widget.gridLeft);
+              int xIndex2 = (xPos2 / (widget.width + widget.spacer)).round();
+              double yPos2 = (details.offset.dy - widget.gridTop);
+              int yIndex2 = (yPos2 / (widget.width + widget.spacer)).round();
+              int index2 = (6 * yIndex2) + xIndex2;
+
+              double xPos3 = (details.offset.dx + 2 * (widget.spacer + widget.width) - widget.gridLeft);
+              int xIndex3 = (xPos3 / (widget.width + widget.spacer)).round();
+              double yPos3 = (details.offset.dy - widget.gridTop);
+              int yIndex3 = (yPos3 / (widget.width + widget.spacer)).round();
+              int index3 = (6 * yIndex3) + xIndex3;
+
+              double xPos4 = (details.offset.dx + 3 * (widget.spacer + widget.width) - widget.gridLeft);
+              int xIndex4 = (xPos4 / (widget.width + widget.spacer)).round();
+              double yPos4 = (details.offset.dy - widget.gridTop);
+              int yIndex4 = (yPos4 / (widget.width + widget.spacer)).round();
+              int index4 = (6 * yIndex4) + xIndex4;
+
+              double gridDimPadded = widget.gridRight - widget.gridLeft - (widget.width / 2);
+              double zeroPadded = 0.0 - (widget.width / 2);
+
+              // Check if the block is in the grid at all
+              if (xPos < gridDimPadded && xPos > zeroPadded && xPos2 < gridDimPadded && xPos2 > zeroPadded && xPos3 < gridDimPadded && xPos3 > zeroPadded && xPos4 < gridDimPadded && xPos4 > zeroPadded &&
+                  yPos < gridDimPadded && yPos > zeroPadded && yPos2 < gridDimPadded && yPos2 > zeroPadded && yPos3 < gridDimPadded && yPos3 > zeroPadded && yPos4 < gridDimPadded && yPos4 > zeroPadded) {
               
-                int xIndex3 = (((details.offset.dx + (2 * widget.spacer) + (2 * widget.width)) - widget.gridLeft) / (widget.width + widget.spacer)).round();
-                int yIndex3 = ((details.offset.dy - widget.gridTop) / (widget.width + widget.spacer)).round();
-                int index3 = (6 * yIndex3) + xIndex3;
-
-                int xIndex4 = (((details.offset.dx + (3 * widget.spacer) + (3 * widget.width)) - widget.gridLeft) / (widget.width + widget.spacer)).round();
-                int yIndex4 = ((details.offset.dy - widget.gridTop) / (widget.width + widget.spacer)).round();
-                int index4 = (6 * yIndex4) + xIndex4;
-
                 // If the square isn't on a blocker or occupied spot
-                if (!widget.blockerPosList.contains(index) && !widget.occupied.contains(index) && !widget.blockerPosList.contains(index2) && !widget.occupied.contains(index2) && !widget.blockerPosList.contains(index3) && !widget.occupied.contains(index3) && !widget.blockerPosList.contains(index4) && !widget.occupied.contains(index4)) {
+                if (!widget.blockerPosList.contains(index) && !widget.occupied.contains(index) && 
+                    !widget.blockerPosList.contains(index2) && !widget.occupied.contains(index2) && 
+                    !widget.blockerPosList.contains(index3) && !widget.occupied.contains(index3) && 
+                    !widget.blockerPosList.contains(index4) && !widget.occupied.contains(index4)) {
+                  
                   setState(() {
                     
                     // Determine where it needs to be in order to lock to the grid
@@ -665,10 +763,12 @@ class QuadDragBoxState extends State<QuadDragBox> {
                   
                     position = Offset(xpos, ypos);
                     dragEnded = true;
+
                     widget.occupied.add(index);
                     widget.occupied.add(index2);
                     widget.occupied.add(index3);
                     widget.occupied.add(index4);
+                    widget.onUpdate();
                     
                     prevIndex = index;
                     prevIndex2 = index2;
@@ -691,32 +791,46 @@ class QuadDragBoxState extends State<QuadDragBox> {
                   dragEnded = false;
                 });
               }
+            } else {
 
-            } else { // Rotated
+              // Determine what index of the grid this spot is (to check whether it's open or not)
+              double xPos = details.offset.dx - widget.gridLeft;
+              int xIndex = (xPos / (widget.width + widget.spacer)).round();
+              double yPos = (details.offset.dy - widget.gridTop);
+              int yIndex = (yPos / (widget.width + widget.spacer)).round();
+              int index = (6 * yIndex) + xIndex;
+
+              double xPos2 = (details.offset.dx - widget.gridLeft);
+              int xIndex2 = (xPos2 / (widget.width + widget.spacer)).round();
+              double yPos2 = (details.offset.dy + widget.spacer + widget.width - widget.gridTop);
+              int yIndex2 = (yPos2 / (widget.width + widget.spacer)).round();
+              int index2 = (6 * yIndex2) + xIndex2;
+
+              double xPos3 = (details.offset.dx - widget.gridLeft);
+              int xIndex3 = (xPos3 / (widget.width + widget.spacer)).round();
+              double yPos3 = (details.offset.dy + 2 * (widget.spacer + widget.width) - widget.gridTop);
+              int yIndex3 = (yPos3 / (widget.width + widget.spacer)).round();
+              int index3 = (6 * yIndex3) + xIndex3;
+
+              double xPos4 = (details.offset.dx - widget.gridLeft);
+              int xIndex4 = (xPos4 / (widget.width + widget.spacer)).round();
+              double yPos4 = (details.offset.dy + 3 * (widget.spacer + widget.width) - widget.gridTop);
+              int yIndex4 = (yPos4 / (widget.width + widget.spacer)).round();
+              int index4 = (6 * yIndex4) + xIndex4;
+
+              double gridDimPadded = (widget.gridRight - widget.gridLeft) - (widget.width / 2);
+              double zeroPadded = 0.0 - (widget.width / 2);
 
               // Check if the block is in the grid at all
-              if (details.offset.dx > (widget.gridLeft - widget.width / 2) && (details.offset.dx < widget.gridRight - widget.width / 2) &&
-                  details.offset.dy > (widget.gridTop - widget.width / 2) && ((details.offset.dy + (3 * widget.spacer) + (3 * widget.width)) < widget.gridBottom - widget.width / 2)) {
-                
-                // Determine what index of the grid this spot is (to check whether it's open or not)
-                int xIndex = ((details.offset.dx - widget.gridLeft) / (widget.width + widget.spacer)).round();
-                int yIndex = ((details.offset.dy - widget.gridTop) / (widget.width + widget.spacer)).round();
-                int index = (6 * yIndex) + xIndex;
-
-                int xIndex2 = ((details.offset.dx - widget.gridLeft) / (widget.width + widget.spacer)).round();
-                int yIndex2 = ((details.offset.dy + widget.spacer + widget.width - widget.gridTop) / (widget.width + widget.spacer)).round();
-                int index2 = (6 * yIndex2) + xIndex2;
-
-                int xIndex3 = ((details.offset.dx - widget.gridLeft) / (widget.width + widget.spacer)).round();
-                int yIndex3 = ((details.offset.dy + (2 * widget.spacer) + (2 * widget.width) - widget.gridTop) / (widget.width + widget.spacer)).round();
-                int index3 = (6 * yIndex3) + xIndex3;
-
-                int xIndex4 = ((details.offset.dx - widget.gridLeft) / (widget.width + widget.spacer)).round();
-                int yIndex4 = ((details.offset.dy + (3 * widget.spacer) + (3 * widget.width) - widget.gridTop) / (widget.width + widget.spacer)).round();
-                int index4 = (6 * yIndex4) + xIndex4;
-
+              if (xPos < gridDimPadded && xPos > zeroPadded && xPos2 < gridDimPadded && xPos2 > zeroPadded && xPos3 < gridDimPadded && xPos3 > zeroPadded && xPos4 < gridDimPadded && xPos4 > zeroPadded &&
+                  yPos < gridDimPadded && yPos > zeroPadded && yPos2 < gridDimPadded && yPos2 > zeroPadded && yPos3 < gridDimPadded && yPos3 > zeroPadded && yPos4 < gridDimPadded && yPos4 > zeroPadded) {
+              
                 // If the square isn't on a blocker or occupied spot
-                if (!widget.blockerPosList.contains(index) && !widget.occupied.contains(index) && !widget.blockerPosList.contains(index2) && !widget.occupied.contains(index2) && !widget.blockerPosList.contains(index3) && !widget.occupied.contains(index3) && !widget.blockerPosList.contains(index4) && !widget.occupied.contains(index4)) {
+                if (!widget.blockerPosList.contains(index) && !widget.occupied.contains(index) && 
+                    !widget.blockerPosList.contains(index2) && !widget.occupied.contains(index2) && 
+                    !widget.blockerPosList.contains(index3) && !widget.occupied.contains(index3) && 
+                    !widget.blockerPosList.contains(index4) && !widget.occupied.contains(index4)) {
+                  
                   setState(() {
                     
                     // Determine where it needs to be in order to lock to the grid
@@ -725,16 +839,17 @@ class QuadDragBoxState extends State<QuadDragBox> {
                   
                     position = Offset(xpos, ypos);
                     dragEnded = true;
+
                     widget.occupied.add(index);
                     widget.occupied.add(index2);
                     widget.occupied.add(index3);
                     widget.occupied.add(index4);
-        
+                    widget.onUpdate();
+                    
                     prevIndex = index;
                     prevIndex2 = index2;
                     prevIndex3 = index3;
                     prevIndex4 = index4;
-                  
                   });
                 
                 // If the spot is occupied, return to original position
@@ -752,7 +867,7 @@ class QuadDragBoxState extends State<QuadDragBox> {
                   dragEnded = false;
                 });
               }
-            }
+            } 
           },
           
           feedback:         
@@ -838,8 +953,9 @@ class BigDragBox extends StatefulWidget {
   final List<int> occupied;
   final int identifier;
 
+  final Function() onUpdate;
 
-  const BigDragBox(this.initPos, this.itemColor, this.width, this.spacer, this.gridLeft, this.gridRight, this.gridTop, this.gridBottom, this.blockerPosList, this.occupied, this.identifier);
+  const BigDragBox(this.onUpdate, this.initPos, this.itemColor, this.width, this.spacer, this.gridLeft, this.gridRight, this.gridTop, this.gridBottom, this.blockerPosList, this.occupied, this.identifier);
 
   @override
   BigDragBoxState createState() => BigDragBoxState();
@@ -881,15 +997,19 @@ class BigDragBoxState extends State<BigDragBox> {
             // Remove previous position from occupied list
             if (widget.occupied.contains(prevIndex)) {
               widget.occupied.remove(prevIndex);
+              widget.onUpdate();
             }
             if (widget.occupied.contains(prevIndex2)) {
               widget.occupied.remove(prevIndex2);
+              widget.onUpdate();
             }
             if (widget.occupied.contains(prevIndex3)) {
               widget.occupied.remove(prevIndex3);
+              widget.onUpdate();
             }
             if (widget.occupied.contains(prevIndex4)) {
               widget.occupied.remove(prevIndex4);
+              widget.onUpdate();
             }
           },
 
@@ -930,6 +1050,7 @@ class BigDragBoxState extends State<BigDragBox> {
                   widget.occupied.add(index2);
                   widget.occupied.add(index3);
                   widget.occupied.add(index4);
+                  widget.onUpdate();
                   
                   prevIndex = index;
                   prevIndex2 = index2;
@@ -1015,8 +1136,9 @@ class SmallR extends StatefulWidget {
   final List<int> occupied;
   final int identifier;
 
+  final Function() onUpdate;
 
-  const SmallR(this.initPos, this.itemColor, this.width, this.spacer, this.gridLeft, this.gridRight, this.gridTop, this.gridBottom, this.blockerPosList, this.occupied, this.identifier);
+  const SmallR(this.onUpdate, this.initPos, this.itemColor, this.width, this.spacer, this.gridLeft, this.gridRight, this.gridTop, this.gridBottom, this.blockerPosList, this.occupied, this.identifier);
 
   @override
   SmallRState createState() => SmallRState();
@@ -1057,12 +1179,15 @@ class SmallRState extends State<SmallR> {
             // Remove previous position from occupied list
             if (widget.occupied.contains(prevIndex)) {
               widget.occupied.remove(prevIndex);
+              widget.onUpdate();
             }
             if (widget.occupied.contains(prevIndex2)) {
               widget.occupied.remove(prevIndex2);
+              widget.onUpdate();
             }
             if (widget.occupied.contains(prevIndex3)) {
               widget.occupied.remove(prevIndex3);
+              widget.onUpdate();
             }
           },
 
@@ -1114,6 +1239,7 @@ class SmallRState extends State<SmallR> {
                     widget.occupied.add(index);
                     widget.occupied.add(index2);
                     widget.occupied.add(index3);
+                    widget.onUpdate();
                     
                     prevIndex = index;
                     prevIndex2 = index2;
@@ -1181,6 +1307,7 @@ class SmallRState extends State<SmallR> {
                     widget.occupied.add(index);
                     widget.occupied.add(index2);
                     widget.occupied.add(index3);
+                    widget.onUpdate();
         
                     prevIndex = index;
                     prevIndex2 = index2;
@@ -1248,6 +1375,7 @@ class SmallRState extends State<SmallR> {
                     widget.occupied.add(index);
                     widget.occupied.add(index2);
                     widget.occupied.add(index3);
+                    widget.onUpdate();
         
                     prevIndex = index;
                     prevIndex2 = index2;
@@ -1315,6 +1443,7 @@ class SmallRState extends State<SmallR> {
                     widget.occupied.add(index);
                     widget.occupied.add(index2);
                     widget.occupied.add(index3);
+                    widget.onUpdate();
         
                     prevIndex = index;
                     prevIndex2 = index2;
@@ -1535,8 +1664,9 @@ class BigR extends StatefulWidget {
   final List<int> occupied;
   final int identifier;
 
+  final Function() onUpdate;
 
-  const BigR(this.initPos, this.itemColor, this.width, this.spacer, this.gridLeft, this.gridRight, this.gridTop, this.gridBottom, this.blockerPosList, this.occupied, this.identifier);
+  const BigR(this.onUpdate, this.initPos, this.itemColor, this.width, this.spacer, this.gridLeft, this.gridRight, this.gridTop, this.gridBottom, this.blockerPosList, this.occupied, this.identifier);
 
   @override
   BigRState createState() => BigRState();
@@ -1578,15 +1708,19 @@ class BigRState extends State<BigR> {
             // Remove previous position from occupied list
             if (widget.occupied.contains(prevIndex)) {
               widget.occupied.remove(prevIndex);
+              widget.onUpdate();
             }
             if (widget.occupied.contains(prevIndex2)) {
               widget.occupied.remove(prevIndex2);
+              widget.onUpdate();
             }
             if (widget.occupied.contains(prevIndex3)) {
               widget.occupied.remove(prevIndex3);
+              widget.onUpdate();
             }
             if (widget.occupied.contains(prevIndex4)) {
               widget.occupied.remove(prevIndex4);
+              widget.onUpdate();
             }
           },
 
@@ -1646,6 +1780,7 @@ class BigRState extends State<BigR> {
                     widget.occupied.add(index2);
                     widget.occupied.add(index3);
                     widget.occupied.add(index4);
+                    widget.onUpdate();
                     
                     prevIndex = index;
                     prevIndex2 = index2;
@@ -1721,6 +1856,7 @@ class BigRState extends State<BigR> {
                     widget.occupied.add(index2);
                     widget.occupied.add(index3);
                     widget.occupied.add(index4);
+                    widget.onUpdate();
                     
                     prevIndex = index;
                     prevIndex2 = index2;
@@ -1796,6 +1932,7 @@ class BigRState extends State<BigR> {
                     widget.occupied.add(index2);
                     widget.occupied.add(index3);
                     widget.occupied.add(index4);
+                    widget.onUpdate();
                     
                     prevIndex = index;
                     prevIndex2 = index2;
@@ -1871,6 +2008,7 @@ class BigRState extends State<BigR> {
                     widget.occupied.add(index2);
                     widget.occupied.add(index3);
                     widget.occupied.add(index4);
+                    widget.onUpdate();
                     
                     prevIndex = index;
                     prevIndex2 = index2;
@@ -2140,8 +2278,9 @@ class TDragBox extends StatefulWidget {
   final List<int> occupied;
   final int identifier;
 
+  final Function() onUpdate;
 
-  const TDragBox(this.initPos, this.itemColor, this.width, this.spacer, this.gridLeft, this.gridRight, this.gridTop, this.gridBottom, this.blockerPosList, this.occupied, this.identifier);
+  const TDragBox(this.onUpdate, this.initPos, this.itemColor, this.width, this.spacer, this.gridLeft, this.gridRight, this.gridTop, this.gridBottom, this.blockerPosList, this.occupied, this.identifier);
 
   @override
   TDragBoxState createState() => TDragBoxState();
@@ -2183,15 +2322,19 @@ class TDragBoxState extends State<TDragBox> {
             // Remove previous position from occupied list
             if (widget.occupied.contains(prevIndex)) {
               widget.occupied.remove(prevIndex);
+              widget.onUpdate();
             }
             if (widget.occupied.contains(prevIndex2)) {
               widget.occupied.remove(prevIndex2);
+              widget.onUpdate();
             }
             if (widget.occupied.contains(prevIndex3)) {
               widget.occupied.remove(prevIndex3);
+              widget.onUpdate();
             }
             if (widget.occupied.contains(prevIndex4)) {
               widget.occupied.remove(prevIndex4);
+              widget.onUpdate();
             }
           },
 
@@ -2251,6 +2394,7 @@ class TDragBoxState extends State<TDragBox> {
                     widget.occupied.add(index2);
                     widget.occupied.add(index3);
                     widget.occupied.add(index4);
+                    widget.onUpdate();
                     
                     prevIndex = index;
                     prevIndex2 = index2;
@@ -2326,6 +2470,7 @@ class TDragBoxState extends State<TDragBox> {
                     widget.occupied.add(index2);
                     widget.occupied.add(index3);
                     widget.occupied.add(index4);
+                    widget.onUpdate();
                     
                     prevIndex = index;
                     prevIndex2 = index2;
@@ -2401,6 +2546,7 @@ class TDragBoxState extends State<TDragBox> {
                     widget.occupied.add(index2);
                     widget.occupied.add(index3);
                     widget.occupied.add(index4);
+                    widget.onUpdate();
                     
                     prevIndex = index;
                     prevIndex2 = index2;
@@ -2476,6 +2622,7 @@ class TDragBoxState extends State<TDragBox> {
                     widget.occupied.add(index2);
                     widget.occupied.add(index3);
                     widget.occupied.add(index4);
+                    widget.onUpdate();
                     
                     prevIndex = index;
                     prevIndex2 = index2;
@@ -2745,14 +2892,15 @@ class SDragBox extends StatefulWidget {
   final List<int> occupied;
   final int identifier;
 
+  final Function() onUpdate;
 
-  const SDragBox(this.initPos, this.itemColor, this.width, this.spacer, this.gridLeft, this.gridRight, this.gridTop, this.gridBottom, this.blockerPosList, this.occupied, this.identifier);
+  const SDragBox(this.onUpdate, this.initPos, this.itemColor, this.width, this.spacer, this.gridLeft, this.gridRight, this.gridTop, this.gridBottom, this.blockerPosList, this.occupied, this.identifier);
 
   @override
   SDragBoxState createState() => SDragBoxState();
 }
 
-class SDragBoxState extends State<SDragBox> {
+class SDragBoxState extends State<SDragBox> {  
   Offset position = const Offset(0.0, 0.0);
   bool dragEnded = false;
   bool rotated = false;
@@ -2788,15 +2936,19 @@ class SDragBoxState extends State<SDragBox> {
             // Remove previous position from occupied list
             if (widget.occupied.contains(prevIndex)) {
               widget.occupied.remove(prevIndex);
+              widget.onUpdate();
             }
             if (widget.occupied.contains(prevIndex2)) {
               widget.occupied.remove(prevIndex2);
+              widget.onUpdate();
             }
             if (widget.occupied.contains(prevIndex3)) {
               widget.occupied.remove(prevIndex3);
+              widget.onUpdate();
             }
             if (widget.occupied.contains(prevIndex4)) {
               widget.occupied.remove(prevIndex4);
+              widget.onUpdate();
             }
           },
 
@@ -2856,6 +3008,7 @@ class SDragBoxState extends State<SDragBox> {
                     widget.occupied.add(index2);
                     widget.occupied.add(index3);
                     widget.occupied.add(index4);
+                    widget.onUpdate();
                     
                     prevIndex = index;
                     prevIndex2 = index2;
@@ -2868,6 +3021,10 @@ class SDragBoxState extends State<SDragBox> {
                   setState(() {
                     position = widget.initPos;
                     dragEnded = false;
+                    prevIndex = -1;
+                    prevIndex2 = -1;
+                    prevIndex3 = -1;
+                    prevIndex4 = -1;
                   });
                 }
 
@@ -2876,6 +3033,10 @@ class SDragBoxState extends State<SDragBox> {
                 setState(() {
                   position = widget.initPos;
                   dragEnded = false;
+                  prevIndex = -1;
+                  prevIndex2 = -1;
+                  prevIndex3 = -1;
+                  prevIndex4 = -1;
                 });
               }
             } else {
@@ -2931,6 +3092,7 @@ class SDragBoxState extends State<SDragBox> {
                     widget.occupied.add(index2);
                     widget.occupied.add(index3);
                     widget.occupied.add(index4);
+                    widget.onUpdate();
                     
                     prevIndex = index;
                     prevIndex2 = index2;
@@ -2943,6 +3105,10 @@ class SDragBoxState extends State<SDragBox> {
                   setState(() {
                     position = widget.initPos;
                     dragEnded = false;
+                    prevIndex = -1;
+                    prevIndex2 = -1;
+                    prevIndex3 = -1;
+                    prevIndex4 = -1;
                   });
                 }
 
@@ -2951,6 +3117,10 @@ class SDragBoxState extends State<SDragBox> {
                 setState(() {
                   position = widget.initPos;
                   dragEnded = false;
+                  prevIndex = -1;
+                  prevIndex2 = -1;
+                  prevIndex3 = -1;
+                  prevIndex4 = -1;
                 });
               }
             } 
