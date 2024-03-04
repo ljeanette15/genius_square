@@ -109,6 +109,7 @@ class SingleDragBoxState extends State<SingleDragBox> {
                 setState(() {
                   position = widget.initPos;
                   dragEnded = false;
+                  prevIndex = -1;
                 });
               }
 
@@ -117,6 +118,7 @@ class SingleDragBoxState extends State<SingleDragBox> {
               setState(() {
                 position = widget.initPos;
                 dragEnded = false;
+                prevIndex = -1;
               });
             }
           },
@@ -244,6 +246,8 @@ class DoubleDragBoxState extends State<DoubleDragBox> {
                   setState(() {
                     position = widget.initPos;
                     dragEnded = false;
+                    prevIndex = -1;
+                    prevIndex2 = -1;
                   });
                 }
 
@@ -252,6 +256,8 @@ class DoubleDragBoxState extends State<DoubleDragBox> {
                 setState(() {
                   position = widget.initPos;
                   dragEnded = false;
+                  prevIndex = -1;
+                  prevIndex2 = -1;
                 });
               }
             } else { // Rotated
@@ -302,6 +308,8 @@ class DoubleDragBoxState extends State<DoubleDragBox> {
                   setState(() {
                     position = widget.initPos;
                     dragEnded = false;
+                    prevIndex = -1;
+                    prevIndex2 = -1;
                   });
                 }
 
@@ -310,6 +318,8 @@ class DoubleDragBoxState extends State<DoubleDragBox> {
                 setState(() {
                   position = widget.initPos;
                   dragEnded = false;
+                  prevIndex = -1;
+                  prevIndex2 = -1;
                 });
               }
             } 
@@ -322,7 +332,7 @@ class DoubleDragBoxState extends State<DoubleDragBox> {
                 return Column(
                   children: <Widget> [
                     RoundBox(itemColor: widget.itemColor, width: widget.width),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                     RoundBox(itemColor: widget.itemColor, width: widget.width)
                   ],
                 );
@@ -330,7 +340,7 @@ class DoubleDragBoxState extends State<DoubleDragBox> {
                 return Row(
                   children: <Widget> [
                     RoundBox(itemColor: widget.itemColor, width: widget.width),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     RoundBox(itemColor: widget.itemColor, width: widget.width)
                   ],
                 );
@@ -344,7 +354,7 @@ class DoubleDragBoxState extends State<DoubleDragBox> {
                 return Column(
                   children: <Widget> [
                     RoundBox(itemColor: widget.itemColor, width: widget.width),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                     RoundBox(itemColor: widget.itemColor, width: widget.width)
                   ],
                 );
@@ -352,7 +362,7 @@ class DoubleDragBoxState extends State<DoubleDragBox> {
                 return Row(
                   children: <Widget> [
                     RoundBox(itemColor: widget.itemColor, width: widget.width),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     RoundBox(itemColor: widget.itemColor, width: widget.width)
                   ],
                 );
@@ -497,6 +507,9 @@ class TripleDragBoxState extends State<TripleDragBox> {
                   setState(() {
                     position = widget.initPos;
                     dragEnded = false;
+                    prevIndex = -1;
+                    prevIndex2 = -1;
+                    prevIndex3 = -1;
                   });
                 }
 
@@ -505,6 +518,9 @@ class TripleDragBoxState extends State<TripleDragBox> {
                 setState(() {
                   position = widget.initPos;
                   dragEnded = false;
+                  prevIndex = -1;
+                  prevIndex2 = -1;
+                  prevIndex3 = -1;
                 });
               }
             } else {
@@ -564,6 +580,9 @@ class TripleDragBoxState extends State<TripleDragBox> {
                   setState(() {
                     position = widget.initPos;
                     dragEnded = false;
+                    prevIndex = -1;
+                    prevIndex2 = -1;
+                    prevIndex3 = -1;
                   });
                 }
 
@@ -572,6 +591,9 @@ class TripleDragBoxState extends State<TripleDragBox> {
                 setState(() {
                   position = widget.initPos;
                   dragEnded = false;
+                  prevIndex = -1;
+                  prevIndex2 = -1;
+                  prevIndex3 = -1;
                 });
               }
             } 
@@ -584,9 +606,9 @@ class TripleDragBoxState extends State<TripleDragBox> {
                 return Column(
                   children: <Widget> [
                     RoundBox(itemColor: widget.itemColor, width: widget.width),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                     RoundBox(itemColor: widget.itemColor, width: widget.width),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                     RoundBox(itemColor: widget.itemColor, width: widget.width)
                   ],
                 );
@@ -594,9 +616,9 @@ class TripleDragBoxState extends State<TripleDragBox> {
                 return Row(
                   children: <Widget> [
                     RoundBox(itemColor: widget.itemColor, width: widget.width),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     RoundBox(itemColor: widget.itemColor, width: widget.width),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     RoundBox(itemColor: widget.itemColor, width: widget.width)
                   ],
                 );
@@ -610,9 +632,9 @@ class TripleDragBoxState extends State<TripleDragBox> {
                 return Column(
                   children: <Widget> [
                     RoundBox(itemColor: widget.itemColor, width: widget.width),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                     RoundBox(itemColor: widget.itemColor, width: widget.width),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                     RoundBox(itemColor: widget.itemColor, width: widget.width)
                   ],
                 );
@@ -620,9 +642,9 @@ class TripleDragBoxState extends State<TripleDragBox> {
                 return Row(
                   children: <Widget> [
                     RoundBox(itemColor: widget.itemColor, width: widget.width),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     RoundBox(itemColor: widget.itemColor, width: widget.width),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     RoundBox(itemColor: widget.itemColor, width: widget.width)
                   ],
                 );
@@ -781,6 +803,10 @@ class QuadDragBoxState extends State<QuadDragBox> {
                   setState(() {
                     position = widget.initPos;
                     dragEnded = false;
+                    prevIndex = -1;
+                    prevIndex2 = -1;
+                    prevIndex3 = -1;
+                    prevIndex4 = -1;
                   });
                 }
 
@@ -789,6 +815,10 @@ class QuadDragBoxState extends State<QuadDragBox> {
                 setState(() {
                   position = widget.initPos;
                   dragEnded = false;
+                  prevIndex = -1;
+                  prevIndex2 = -1;
+                  prevIndex3 = -1;
+                  prevIndex4 = -1;
                 });
               }
             } else {
@@ -857,6 +887,10 @@ class QuadDragBoxState extends State<QuadDragBox> {
                   setState(() {
                     position = widget.initPos;
                     dragEnded = false;
+                    prevIndex = -1;
+                    prevIndex2 = -1;
+                    prevIndex3 = -1;
+                    prevIndex4 = -1;
                   });
                 }
 
@@ -865,6 +899,10 @@ class QuadDragBoxState extends State<QuadDragBox> {
                 setState(() {
                   position = widget.initPos;
                   dragEnded = false;
+                  prevIndex = -1;
+                  prevIndex2 = -1;
+                  prevIndex3 = -1;
+                  prevIndex4 = -1;
                 });
               }
             } 
@@ -877,11 +915,11 @@ class QuadDragBoxState extends State<QuadDragBox> {
                 return Column(
                   children: <Widget> [
                     RoundBox(itemColor: widget.itemColor, width: widget.width),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                     RoundBox(itemColor: widget.itemColor, width: widget.width),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                     RoundBox(itemColor: widget.itemColor, width: widget.width),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                     RoundBox(itemColor: widget.itemColor, width: widget.width),
                   ],
                 );
@@ -889,11 +927,11 @@ class QuadDragBoxState extends State<QuadDragBox> {
                 return Row(
                   children: <Widget> [
                     RoundBox(itemColor: widget.itemColor, width: widget.width),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     RoundBox(itemColor: widget.itemColor, width: widget.width),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     RoundBox(itemColor: widget.itemColor, width: widget.width),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     RoundBox(itemColor: widget.itemColor, width: widget.width),
                   ],
                 );
@@ -907,11 +945,11 @@ class QuadDragBoxState extends State<QuadDragBox> {
                 return Column(
                   children: <Widget> [
                     RoundBox(itemColor: widget.itemColor, width: widget.width),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                     RoundBox(itemColor: widget.itemColor, width: widget.width),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                     RoundBox(itemColor: widget.itemColor, width: widget.width),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                     RoundBox(itemColor: widget.itemColor, width: widget.width),
                   ],
                 );
@@ -919,11 +957,11 @@ class QuadDragBoxState extends State<QuadDragBox> {
                 return Row(
                   children: <Widget> [
                     RoundBox(itemColor: widget.itemColor, width: widget.width),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     RoundBox(itemColor: widget.itemColor, width: widget.width),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     RoundBox(itemColor: widget.itemColor, width: widget.width),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     RoundBox(itemColor: widget.itemColor, width: widget.width),
                   ],
                 );
@@ -1063,6 +1101,10 @@ class BigDragBoxState extends State<BigDragBox> {
                 setState(() {
                   position = widget.initPos;
                   dragEnded = false;
+                  prevIndex = -1;
+                  prevIndex2 = -1;
+                  prevIndex3 = -1;
+                  prevIndex4 = -1;
                 });
               }
 
@@ -1071,6 +1113,10 @@ class BigDragBoxState extends State<BigDragBox> {
               setState(() {
                 position = widget.initPos;
                 dragEnded = false;
+                prevIndex = -1;
+                prevIndex2 = -1;
+                prevIndex3 = -1;
+                prevIndex4 = -1;
               });
             }
           },
@@ -1081,14 +1127,15 @@ class BigDragBoxState extends State<BigDragBox> {
               Column(
                 children: <Widget> [
                   RoundBox(itemColor: widget.itemColor, width: widget.width),
-                  RoundBox(itemColor: Colors.white, width: widget.spacer),
+                  Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                   RoundBox(itemColor: widget.itemColor, width: widget.width),
                 ],
               ),
+              Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: 2 * widget.width + widget.spacer,),
               Column(
                 children: <Widget> [
                   RoundBox(itemColor: widget.itemColor, width: widget.width),
-                  RoundBox(itemColor: Colors.white, width: widget.spacer),
+                  Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                   RoundBox(itemColor: widget.itemColor, width: widget.width),
                 ],
               ),
@@ -1100,15 +1147,15 @@ class BigDragBoxState extends State<BigDragBox> {
               Column(
                 children: <Widget> [
                   RoundBox(itemColor: widget.itemColor, width: widget.width),
-                  RoundBox(itemColor: Colors.white, width: widget.spacer),
+                  Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                   RoundBox(itemColor: widget.itemColor, width: widget.width),
                 ],
               ),
-              RoundBox(itemColor: Colors.white, width: widget.spacer),
+              Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: 2 * widget.width + widget.spacer,),
               Column(
                 children: <Widget> [
                   RoundBox(itemColor: widget.itemColor, width: widget.width),
-                  RoundBox(itemColor: Colors.white, width: widget.spacer),
+                  Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                   RoundBox(itemColor: widget.itemColor, width: widget.width),
                 ],
               ),
@@ -1252,6 +1299,9 @@ class SmallRState extends State<SmallR> {
                   setState(() {
                     position = widget.initPos;
                     dragEnded = false;
+                    prevIndex = -1;
+                    prevIndex2 = -1;
+                    prevIndex3 = -1;
                   });
                 }
 
@@ -1260,6 +1310,9 @@ class SmallRState extends State<SmallR> {
                 setState(() {
                   position = widget.initPos;
                   dragEnded = false;
+                  prevIndex = -1;
+                  prevIndex2 = -1;
+                  prevIndex3 = -1;
                 });
               }
             } else if (rotated == 1) {
@@ -1320,6 +1373,9 @@ class SmallRState extends State<SmallR> {
                   setState(() {
                     position = widget.initPos;
                     dragEnded = false;
+                    prevIndex = -1;
+                    prevIndex2 = -1;
+                    prevIndex3 = -1;
                   });
                 }
 
@@ -1328,6 +1384,9 @@ class SmallRState extends State<SmallR> {
                 setState(() {
                   position = widget.initPos;
                   dragEnded = false;
+                  prevIndex = -1;
+                  prevIndex2 = -1;
+                  prevIndex3 = -1;
                 });
               }
             } else if (rotated == 2) {
@@ -1388,6 +1447,9 @@ class SmallRState extends State<SmallR> {
                   setState(() {
                     position = widget.initPos;
                     dragEnded = false;
+                    prevIndex = -1;
+                    prevIndex2 = -1;
+                    prevIndex3 = -1;
                   });
                 }
 
@@ -1396,6 +1458,9 @@ class SmallRState extends State<SmallR> {
                 setState(() {
                   position = widget.initPos;
                   dragEnded = false;
+                  prevIndex = -1;
+                  prevIndex2 = -1;
+                  prevIndex3 = -1;
                 });
               }
             } else {
@@ -1456,6 +1521,9 @@ class SmallRState extends State<SmallR> {
                   setState(() {
                     position = widget.initPos;
                     dragEnded = false;
+                    prevIndex = -1;
+                    prevIndex2 = -1;
+                    prevIndex3 = -1;
                   });
                 }
 
@@ -1464,6 +1532,9 @@ class SmallRState extends State<SmallR> {
                 setState(() {
                   position = widget.initPos;
                   dragEnded = false;
+                  prevIndex = -1;
+                  prevIndex2 = -1;
+                  prevIndex3 = -1;
                 });
               }
             } 
@@ -1478,15 +1549,15 @@ class SmallRState extends State<SmallR> {
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
                       ],
                     ),
@@ -1498,15 +1569,15 @@ class SmallRState extends State<SmallR> {
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
@@ -1518,15 +1589,15 @@ class SmallRState extends State<SmallR> {
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
@@ -1538,15 +1609,15 @@ class SmallRState extends State<SmallR> {
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
@@ -1564,15 +1635,15 @@ class SmallRState extends State<SmallR> {
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
                       ],
                     ),
@@ -1584,15 +1655,15 @@ class SmallRState extends State<SmallR> {
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
@@ -1604,15 +1675,15 @@ class SmallRState extends State<SmallR> {
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
@@ -1624,15 +1695,15 @@ class SmallRState extends State<SmallR> {
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
@@ -1793,6 +1864,10 @@ class BigRState extends State<BigR> {
                   setState(() {
                     position = widget.initPos;
                     dragEnded = false;
+                    prevIndex = -1;
+                    prevIndex2 = -1;
+                    prevIndex3 = -1;
+                    prevIndex4 = -1;
                   });
                 }
 
@@ -1801,6 +1876,10 @@ class BigRState extends State<BigR> {
                 setState(() {
                   position = widget.initPos;
                   dragEnded = false;
+                  prevIndex = -1;
+                  prevIndex2 = -1;
+                  prevIndex3 = -1;
+                  prevIndex4 = -1;
                 });
               }
             } else if (rotated == 1) {
@@ -1869,6 +1948,10 @@ class BigRState extends State<BigR> {
                   setState(() {
                     position = widget.initPos;
                     dragEnded = false;
+                    prevIndex = -1;
+                    prevIndex2 = -1;
+                    prevIndex3 = -1;
+                    prevIndex4 = -1;
                   });
                 }
 
@@ -1877,6 +1960,10 @@ class BigRState extends State<BigR> {
                 setState(() {
                   position = widget.initPos;
                   dragEnded = false;
+                  prevIndex = -1;
+                  prevIndex2 = -1;
+                  prevIndex3 = -1;
+                  prevIndex4 = -1;
                 });
               }
             } else if (rotated == 2) {
@@ -1945,6 +2032,10 @@ class BigRState extends State<BigR> {
                   setState(() {
                     position = widget.initPos;
                     dragEnded = false;
+                    prevIndex = -1;
+                    prevIndex2 = -1;
+                    prevIndex3 = -1;
+                    prevIndex4 = -1;
                   });
                 }
 
@@ -1953,6 +2044,10 @@ class BigRState extends State<BigR> {
                 setState(() {
                   position = widget.initPos;
                   dragEnded = false;
+                  prevIndex = -1;
+                  prevIndex2 = -1;
+                  prevIndex3 = -1;
+                  prevIndex4 = -1;
                 });
               }
             } else {
@@ -2021,6 +2116,10 @@ class BigRState extends State<BigR> {
                   setState(() {
                     position = widget.initPos;
                     dragEnded = false;
+                    prevIndex = -1;
+                    prevIndex2 = -1;
+                    prevIndex3 = -1;
+                    prevIndex4 = -1;
                   });
                 }
 
@@ -2029,6 +2128,10 @@ class BigRState extends State<BigR> {
                 setState(() {
                   position = widget.initPos;
                   dragEnded = false;
+                  prevIndex = -1;
+                  prevIndex2 = -1;
+                  prevIndex3 = -1;
+                  prevIndex4 = -1;
                 });
               }
             } 
@@ -2043,23 +2146,23 @@ class BigRState extends State<BigR> {
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
                       ],
                     ),
@@ -2071,19 +2174,19 @@ class BigRState extends State<BigR> {
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
@@ -2095,23 +2198,23 @@ class BigRState extends State<BigR> {
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
@@ -2123,19 +2226,19 @@ class BigRState extends State<BigR> {
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
@@ -2154,23 +2257,23 @@ class BigRState extends State<BigR> {
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
                       ],
                     ),
@@ -2182,19 +2285,19 @@ class BigRState extends State<BigR> {
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
@@ -2206,23 +2309,23 @@ class BigRState extends State<BigR> {
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
@@ -2234,19 +2337,19 @@ class BigRState extends State<BigR> {
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
@@ -2407,6 +2510,10 @@ class TDragBoxState extends State<TDragBox> {
                   setState(() {
                     position = widget.initPos;
                     dragEnded = false;
+                    prevIndex = -1;
+                    prevIndex2 = -1;
+                    prevIndex3 = -1;
+                    prevIndex4 = -1;
                   });
                 }
 
@@ -2415,6 +2522,10 @@ class TDragBoxState extends State<TDragBox> {
                 setState(() {
                   position = widget.initPos;
                   dragEnded = false;
+                  prevIndex = -1;
+                  prevIndex2 = -1;
+                  prevIndex3 = -1;
+                  prevIndex4 = -1;
                 });
               }
             } else if (rotated == 1) {
@@ -2483,6 +2594,10 @@ class TDragBoxState extends State<TDragBox> {
                   setState(() {
                     position = widget.initPos;
                     dragEnded = false;
+                    prevIndex = -1;
+                    prevIndex2 = -1;
+                    prevIndex3 = -1;
+                    prevIndex4 = -1;
                   });
                 }
 
@@ -2491,6 +2606,10 @@ class TDragBoxState extends State<TDragBox> {
                 setState(() {
                   position = widget.initPos;
                   dragEnded = false;
+                  prevIndex = -1;
+                  prevIndex2 = -1;
+                  prevIndex3 = -1;
+                  prevIndex4 = -1;
                 });
               }
             } else if (rotated == 2) {
@@ -2559,6 +2678,10 @@ class TDragBoxState extends State<TDragBox> {
                   setState(() {
                     position = widget.initPos;
                     dragEnded = false;
+                    prevIndex = -1;
+                    prevIndex2 = -1;
+                    prevIndex3 = -1;
+                    prevIndex4 = -1;
                   });
                 }
 
@@ -2567,6 +2690,10 @@ class TDragBoxState extends State<TDragBox> {
                 setState(() {
                   position = widget.initPos;
                   dragEnded = false;
+                  prevIndex = -1;
+                  prevIndex2 = -1;
+                  prevIndex3 = -1;
+                  prevIndex4 = -1;
                 });
               }
             } else {
@@ -2635,6 +2762,10 @@ class TDragBoxState extends State<TDragBox> {
                   setState(() {
                     position = widget.initPos;
                     dragEnded = false;
+                    prevIndex = -1;
+                    prevIndex2 = -1;
+                    prevIndex3 = -1;
+                    prevIndex4 = -1;
                   });
                 }
 
@@ -2643,6 +2774,10 @@ class TDragBoxState extends State<TDragBox> {
                 setState(() {
                   position = widget.initPos;
                   dragEnded = false;
+                  prevIndex = -1;
+                  prevIndex2 = -1;
+                  prevIndex3 = -1;
+                  prevIndex4 = -1;
                 });
               }
             } 
@@ -2657,23 +2792,23 @@ class TDragBoxState extends State<TDragBox> {
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
                       ],
                     ),
@@ -2685,19 +2820,19 @@ class TDragBoxState extends State<TDragBox> {
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
@@ -2709,23 +2844,23 @@ class TDragBoxState extends State<TDragBox> {
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
@@ -2737,19 +2872,19 @@ class TDragBoxState extends State<TDragBox> {
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
                       ],
                     ),
@@ -2768,23 +2903,23 @@ class TDragBoxState extends State<TDragBox> {
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
                       ],
                     ),
@@ -2796,19 +2931,19 @@ class TDragBoxState extends State<TDragBox> {
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
@@ -2820,23 +2955,23 @@ class TDragBoxState extends State<TDragBox> {
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
@@ -2848,19 +2983,19 @@ class TDragBoxState extends State<TDragBox> {
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
                       ],
                     ),
@@ -3135,19 +3270,19 @@ class SDragBoxState extends State<SDragBox> {
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width)
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width)
                       ],
                     )
@@ -3159,23 +3294,23 @@ class SDragBoxState extends State<SDragBox> {
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
                       ],
                     ),
@@ -3193,19 +3328,19 @@ class SDragBoxState extends State<SDragBox> {
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width)
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width)
                       ],
                     )
@@ -3217,23 +3352,23 @@ class SDragBoxState extends State<SDragBox> {
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
                       ],
                     ),
-                    RoundBox(itemColor: Colors.white, width: widget.spacer),
+                    Container(color: Colors.white.withOpacity(0), width: widget.spacer, height: widget.width,),
                     Column(
                       children: <Widget> [
                         RoundBox(itemColor: widget.itemColor, width: widget.width),
-                        RoundBox(itemColor: Colors.white, width: widget.spacer),
+                        Container(color: Colors.white.withOpacity(0), width: widget.width, height: widget.spacer,),
                         RoundBox(itemColor: widget.itemColor.withOpacity(0.0), width: widget.width),
                       ],
                     ),

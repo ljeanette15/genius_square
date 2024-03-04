@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:genius_square/shapes.dart';
 import 'package:genius_square/functions.dart';
+import 'dart:async';
+import 'package:intl/intl.dart';
 
 void main() => runApp(const GeominoesApp());
 
@@ -33,9 +35,13 @@ class MainPageState extends State<MainPage> {
   var draggableDraggedBool = false;
   var prevScreenWidth = 0.0;
   var prevScreenHeight = 0.0;
-  bool doubleDragBoxRotated = false;
 
   List<int> blockerIndeces = getBlockerIndeces();
+
+  Timer? timer;
+  Stopwatch stopwatch = Stopwatch();
+
+  bool started = false;
 
   @override
   Widget build(BuildContext context) {
@@ -59,185 +65,292 @@ class MainPageState extends State<MainPage> {
     }
 
     // Set positions of draggables if this is the initialization (or when screen size changes)
-    if (!draggableDraggedBool || (screenWidth != prevScreenWidth || screenHeight != prevScreenHeight)) {
+    if (!started || (screenWidth != prevScreenWidth || screenHeight != prevScreenHeight)) {
       for(var i = 0; i < 9; i++) {
         double x = (i % 3) * (screenWidth / 3) + (((screenWidth / 3) - gridSquareWidth) / 2);
         double y = (gridBottom + (((i ~/ 3) + (1 / 2)) * (bottomSectionHeight / 3)) - (gridSquareWidth / 2));
         draggableInitPosList[i] = Offset(x, y);
       }
+      stopwatch.start();
+      started = true;
+
+      timer = Timer.periodic(
+        const Duration(seconds: 1),
+        (timer) {
+          setState(() {
+            print("${stopwatch.elapsed.inSeconds}");
+          });
+        }
+      );
+
     }
 
-    
-    print(occupied.length);
-
-    prevScreenHeight = screenHeight;
-    prevScreenWidth = screenWidth;
-
-    return Stack(
-      children: <Widget>[
-        // Grid
-        Positioned(
-          left: gridLeft,
-          top: gridTop,
-          child: SizedBox(
-            width: gridDim,
-            height: gridDim,
-            child: GridView(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 6,
-                crossAxisSpacing: spacer,
-                mainAxisSpacing: spacer,
+    if (occupied.length == 29) {
+      stopwatch.stop();
+      return Stack(
+        children: <Widget> [
+          Positioned(
+            top: (screenHeight / 2) - (gridSquareWidth * 1.5),
+            left: (screenWidth / 2) - (gridSquareWidth * 1.5),
+            child: 
+            Container(
+              decoration: BoxDecoration(
+                color: getStopwatchColor(stopwatch.elapsed.inSeconds),
+                borderRadius: BorderRadius.circular(gridSquareWidth)
               ),
-              children: List<Widget>.generate(36, (int i) {
-                return Builder(builder: (BuildContext context) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: blockerIndeces.contains(i) ? Colors.grey.shade700 : Colors.grey,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  );
-                });
-              }),
+              width: gridSquareWidth * 3, 
+              height: gridSquareWidth * 3, 
+              child: 
+                Center(
+                  child: 
+                    Text(
+                      "${stopwatch.elapsed.inSeconds}",
+                      style: TextStyle(
+                        fontSize: gridSquareWidth * 1.2,
+                        color: Colors.black,
+                        fontStyle: FontStyle.normal,
+                        decoration: TextDecoration.none
+                      ),
+                    )
+                )
             ),
           )
-        ),
+        ]
+      );
 
-        // Pieces
-        BigR(
-          () {setState(() {
-            print("Updated");
-          });}, 
-          draggableInitPosList[0], 
-          Colors.red, 
-          gridSquareWidth, 
-          spacer, gridLeft, 
-          gridRight, 
-          gridTop, 
-          gridBottom, 
-          blockerIndeces, 
-          occupied, 
-          0),
-        TDragBox(
-          () {setState(() {
-            print("Updated");
-          });}, 
-          draggableInitPosList[1], 
-          Colors.orange, 
-          gridSquareWidth, 
-          spacer, 
-          gridLeft, 
-          gridRight, 
-          gridTop, 
-          gridBottom, 
-          blockerIndeces, 
-          occupied, 
-          1),
-        SDragBox(
-          () {setState(() {
-            print("Updated");
-          });}, 
-          draggableInitPosList[2], 
-          Colors.yellow, 
-          gridSquareWidth, 
-          spacer, 
-          gridLeft, 
-          gridRight, 
-          gridTop, 
-          gridBottom, 
-          blockerIndeces, 
-          occupied, 
-          2),
-        QuadDragBox(
-          () {setState(() {
-            print("Updated");
-          });}, 
-          draggableInitPosList[3], 
-          Colors.green, 
-          gridSquareWidth, 
-          spacer, 
-          gridLeft, 
-          gridRight, 
-          gridTop, 
-          gridBottom, 
-          blockerIndeces, 
-          occupied, 
-          3),
-        BigDragBox(
-          () {setState(() {
-            print("Updated");
-          });},           
-          draggableInitPosList[4], 
-          Colors.teal, 
-          gridSquareWidth, 
-          spacer, 
-          gridLeft, 
-          gridRight, 
-          gridTop, 
-          gridBottom, 
-          blockerIndeces, 
-          occupied, 
-          4),
-        SmallR(
-          () {setState(() {
-            print("Updated");
-          });},          
-          draggableInitPosList[5], 
-          Colors.cyan, 
-          gridSquareWidth, 
-          spacer, 
-          gridLeft, 
-          gridRight, 
-          gridTop, 
-          gridBottom, 
-          blockerIndeces, 
-          occupied, 
-          5),
-        SingleDragBox(
-          () {setState(() {
-            print("Updated");
-          });},           
-          draggableInitPosList[6], 
-          Colors.blue, 
-          gridSquareWidth, 
-          spacer, 
-          gridLeft, 
-          gridRight, 
-          gridTop, 
-          gridBottom, 
-          blockerIndeces, 
-          occupied, 
-          6),
-        DoubleDragBox(
-          () {setState(() {
-            print("Updated");
-          });}, 
-          draggableInitPosList[7], 
-          Colors.indigo, 
-          gridSquareWidth, 
-          spacer, gridLeft, 
-          gridRight, gridTop, 
-          gridBottom, 
-          blockerIndeces, 
-          occupied, 
-          7
-        ),
-        TripleDragBox(
-          () {setState(() {
-            print("Updated");
-          });}, 
-          draggableInitPosList[8], 
-          Colors.purple, 
-          gridSquareWidth, 
-          spacer, 
-          gridLeft, 
-          gridRight, 
-          gridTop, 
-          gridBottom, 
-          blockerIndeces, 
-          occupied, 
-          8),
+    }
+    else {
+      prevScreenHeight = screenHeight;
+      prevScreenWidth = screenWidth;
+      return Stack(
+        children: <Widget>[
 
-      ]
-    );
+          // Timer
+          Positioned(
+            top: gridTop,
+            left: (gridLeft / 2) - (gridSquareWidth * 1.5),
+            child: 
+            Container(
+              decoration: BoxDecoration(
+                color: getStopwatchColor(stopwatch.elapsed.inSeconds),
+                borderRadius: BorderRadius.circular(gridSquareWidth)
+              ),
+              width: gridSquareWidth * 3, 
+              height: gridSquareWidth * 3, 
+              child: 
+                Center(
+                  child: 
+                    Text(
+                      "${stopwatch.elapsed.inSeconds}",
+                      style: TextStyle(
+                        fontSize: gridSquareWidth * 1.2,
+                        color: Colors.black,
+                        fontStyle: FontStyle.normal,
+                        decoration: TextDecoration.none
+                      ),
+                    )
+                ),
+            )
+          ),
+
+          // Date
+          Positioned(
+            top: gridTop,
+            left: gridRight + ((screenWidth - gridRight) / 2) - gridSquareWidth * 1.5,
+            child: 
+              Container(
+                width: gridSquareWidth * 3,
+                height: gridSquareWidth * 3,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.black),
+                  borderRadius: BorderRadius.circular(gridSquareWidth)
+                ),
+                child: 
+                    Center(
+                      child:
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Griddio",
+                              style: TextStyle(
+                                fontSize: gridSquareWidth * 0.8,
+                                color: Colors.black,
+                                fontStyle: FontStyle.normal,
+                                decoration: TextDecoration.none
+                              ),
+                            ),
+                            Text(
+                              "${DateFormat.yMMMd().format(DateTime.now())}",
+                              style: TextStyle(
+                                fontSize: gridSquareWidth * 0.4,
+                                color: Colors.black,
+                                fontStyle: FontStyle.normal,
+                                decoration: TextDecoration.none
+                              ),
+                            ),
+                          ],
+                        )
+                    ),
+              )
+          ),
+
+          // Grid
+          Positioned(
+            left: gridLeft,
+            top: gridTop,
+            child: SizedBox(
+              width: gridDim,
+              height: gridDim,
+              child: GridView(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 6,
+                  crossAxisSpacing: spacer,
+                  mainAxisSpacing: spacer,
+                ),
+                children: List<Widget>.generate(36, (int i) {
+                  return Builder(builder: (BuildContext context) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: blockerIndeces.contains(i) ? Colors.grey.shade700 : Colors.grey,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    );
+                  });
+                }),
+              ),
+            )
+          ),
+
+          // Pieces
+          BigR(
+            () {setState(() {
+            });}, 
+            draggableInitPosList[0], 
+            Colors.red, 
+            gridSquareWidth, 
+            spacer, gridLeft, 
+            gridRight, 
+            gridTop, 
+            gridBottom, 
+            blockerIndeces, 
+            occupied, 
+            0),
+          TDragBox(
+            () {setState(() {
+            });}, 
+            draggableInitPosList[1], 
+            Colors.orange, 
+            gridSquareWidth, 
+            spacer, 
+            gridLeft, 
+            gridRight, 
+            gridTop, 
+            gridBottom, 
+            blockerIndeces, 
+            occupied, 
+            1),
+          SDragBox(
+            () {setState(() {
+            });}, 
+            draggableInitPosList[2], 
+            Colors.yellow, 
+            gridSquareWidth, 
+            spacer, 
+            gridLeft, 
+            gridRight, 
+            gridTop, 
+            gridBottom, 
+            blockerIndeces, 
+            occupied, 
+            2),
+          QuadDragBox(
+            () {setState(() {
+            });}, 
+            draggableInitPosList[3], 
+            Colors.green, 
+            gridSquareWidth, 
+            spacer, 
+            gridLeft, 
+            gridRight, 
+            gridTop, 
+            gridBottom, 
+            blockerIndeces, 
+            occupied, 
+            3),
+          BigDragBox(
+            () {setState(() {
+            });},           
+            draggableInitPosList[4], 
+            Colors.teal, 
+            gridSquareWidth, 
+            spacer, 
+            gridLeft, 
+            gridRight, 
+            gridTop, 
+            gridBottom, 
+            blockerIndeces, 
+            occupied, 
+            4),
+          SmallR(
+            () {setState(() {
+            });},          
+            draggableInitPosList[5], 
+            Colors.cyan, 
+            gridSquareWidth, 
+            spacer, 
+            gridLeft, 
+            gridRight, 
+            gridTop, 
+            gridBottom, 
+            blockerIndeces, 
+            occupied, 
+            5),
+          SingleDragBox(
+            () {setState(() {
+            });},           
+            draggableInitPosList[6], 
+            Colors.blue, 
+            gridSquareWidth, 
+            spacer, 
+            gridLeft, 
+            gridRight, 
+            gridTop, 
+            gridBottom, 
+            blockerIndeces, 
+            occupied, 
+            6),
+          DoubleDragBox(
+            () {setState(() {
+            });}, 
+            draggableInitPosList[7], 
+            Colors.indigo, 
+            gridSquareWidth, 
+            spacer, gridLeft, 
+            gridRight, gridTop, 
+            gridBottom, 
+            blockerIndeces, 
+            occupied, 
+            7
+          ),
+          TripleDragBox(
+            () {setState(() {
+            });}, 
+            draggableInitPosList[8], 
+            Colors.purple, 
+            gridSquareWidth, 
+            spacer, 
+            gridLeft, 
+            gridRight, 
+            gridTop, 
+            gridBottom, 
+            blockerIndeces, 
+            occupied, 
+            8),
+
+        ]
+      );
+    }
   }
 }

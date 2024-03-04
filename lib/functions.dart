@@ -1,4 +1,5 @@
 import "dart:math";
+import "package:flutter/material.dart";
 
 // Functions
 List<int> getBlockerIndeces() {
@@ -21,4 +22,16 @@ List<int> getBlockerIndeces() {
   blockerIndeces[6] = diceSeven[Random().nextInt(6)];
 
   return blockerIndeces;
+}
+
+MaterialColor getStopwatchColor(seconds) {
+  if (seconds < 20) {
+    return Colors.green;
+  }
+  else if (seconds < 40) {
+    return Colors.yellow;
+  }
+  else {
+    return Colors.red;
+  }
 }
