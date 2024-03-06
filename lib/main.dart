@@ -3,6 +3,7 @@ import 'package:genius_square/shapes.dart';
 import 'package:genius_square/functions.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
+import 'package:flutter/services.dart';
 
 void main() => runApp(const GeominoesApp());
 
@@ -49,14 +50,17 @@ class MainPageState extends State<MainPage> {
     // Get screen dimensions to base the size off of
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    double gridDim = screenHeight / 2.5;
+    double gridDim1 = screenHeight / 2.5;
+    double gridDim2 = screenWidth / 2.5;
+    double gridDim = (gridDim1 < gridDim2) ? gridDim1 : gridDim2;
     double gridLeft = (screenWidth - gridDim) / 2;
     double gridTop = (screenHeight - gridDim) / 6;
     double gridBottom = gridTop + gridDim;
     double gridRight = gridLeft + gridDim;
     double bottomSectionHeight = screenHeight - gridBottom;
-    const spacer = 3.0;
+    const spacer = 2.0;
     double gridSquareWidth = (gridDim - (5 * spacer)) / 6;
+    double gws = gridSquareWidth + spacer;
     
     // Get positions of grid squares
     for(var i = 0; i < 36; i++) {
@@ -66,11 +70,43 @@ class MainPageState extends State<MainPage> {
 
     // Set positions of draggables if this is the initialization (or when screen size changes)
     if (!started || (screenWidth != prevScreenWidth || screenHeight != prevScreenHeight)) {
-      for(var i = 0; i < 9; i++) {
-        double x = (i % 3) * (screenWidth / 3) + (((screenWidth / 3) - gridSquareWidth) / 2);
-        double y = (gridBottom + (((i ~/ 3) + (1 / 2)) * (bottomSectionHeight / 3)) - (gridSquareWidth / 2));
-        draggableInitPosList[i] = Offset(x, y);
-      }
+
+      double xbigR = (((screenWidth / 3) - (gws * 3)) / 2);
+      double ybigR = gridBottom + (gridDim / 12) + 35.0;
+      draggableInitPosList[0] = Offset(xbigR, ybigR);
+
+      double xT = (((screenWidth / 3) - 3 * gws) / 2);
+      double yT = (gridBottom - 2.4 * gws);
+      draggableInitPosList[1] = Offset(xT, yT);
+
+      double xS = 2 * (screenWidth / 3) + (((screenWidth / 3) - (3 * gws)) / 2);
+      double yS = gridBottom - 2.4 * gws;
+      draggableInitPosList[2] = Offset(xS, yS);
+
+      double xQuad = (screenWidth / 3) + (((screenWidth / 3) - (4 * gws)) / 2);
+      double yQuad = gridBottom + (gridDim / 12) + 35.0;
+      draggableInitPosList[3] = Offset(xQuad, yQuad);
+
+      double xTriple = 2 * (screenWidth / 3) + (((screenWidth / 3) - (3 * gws)) / 2);
+      double yTriple = gridBottom + (gridDim / 12) + 35.0;
+      draggableInitPosList[8] = Offset(xTriple, yTriple);
+
+      double xSmallR = (((screenWidth / 3) - 2 * gws) / 2);
+      double ySmallR = gridBottom + (gridDim / 2.5) + 120.0;
+      draggableInitPosList[5] = Offset(xSmallR, ySmallR);
+
+      double xDouble = (screenWidth / 3) + (((screenWidth / 3) - 2 * gws) / 2);
+      double yDouble = gridBottom + (gridDim / 3) + 180.0;
+      draggableInitPosList[7] = Offset(xDouble, yDouble);
+
+      double xSingle = (screenWidth / 3) + (((screenWidth / 3) - gws) / 2);
+      double ySingle = gridBottom + (gridBottom / 6) + 110.0;
+      draggableInitPosList[6] = Offset(xSingle, ySingle);
+
+      double xBig = 2 * (screenWidth / 3) + (((screenWidth / 3) - 2 * gws) / 2);
+      double yBig = gridBottom + (gridDim / 2.5) + 120.0;
+      draggableInitPosList[4] = Offset(xBig, yBig);
+      
       stopwatch.start();
       started = true;
 
@@ -90,29 +126,96 @@ class MainPageState extends State<MainPage> {
       return Stack(
         children: <Widget> [
           Positioned(
-            top: (screenHeight / 2) - (gridSquareWidth * 1.5),
-            left: (screenWidth / 2) - (gridSquareWidth * 1.5),
+            top: (screenHeight / 2) - (gridSquareWidth * 6),
+            left: (screenWidth / 2) - (gridSquareWidth * 3),
             child: 
-            Container(
-              decoration: BoxDecoration(
-                color: getStopwatchColor(stopwatch.elapsed.inSeconds),
-                borderRadius: BorderRadius.circular(gridSquareWidth)
-              ),
-              width: gridSquareWidth * 3, 
-              height: gridSquareWidth * 3, 
-              child: 
-                Center(
+            Column(
+              children: <Widget> [
+                Container(
+                  decoration: BoxDecoration(
+                    color: getStopwatchColor(stopwatch.elapsed.inSeconds),
+                    borderRadius: BorderRadius.circular(gridSquareWidth)
+                  ),
+                  width: gridSquareWidth * 6, 
+                  height: gridSquareWidth * 3, 
                   child: 
-                    Text(
-                      "${stopwatch.elapsed.inSeconds}",
-                      style: TextStyle(
-                        fontSize: gridSquareWidth * 1.2,
-                        color: Colors.black,
-                        fontStyle: FontStyle.normal,
-                        decoration: TextDecoration.none
+                    Center(
+                      child: 
+                        Text(
+                          "${stopwatch.elapsed.inSeconds} s",
+                          style: TextStyle(
+                            fontSize: gridSquareWidth * 1.2,
+                            color: Colors.black,
+                            fontStyle: FontStyle.normal,
+                            decoration: TextDecoration.none
+                          ),
+                        )
+                    )
+                ),
+                RoundBox(itemColor: Colors.white.withOpacity(0.0), width: gridSquareWidth / 2),
+                SizedBox(
+                  width: gridSquareWidth * 6, 
+                  height: gridSquareWidth,
+                  child:                 
+                    FilledButton(
+                      onPressed: () async {
+                        if (stopwatch.elapsed.inSeconds < 20){
+                          await Clipboard.setData(ClipboardData(text: "Griddio #${DateTime.now().month * 30 + DateTime.now().day}: 🟢 ${stopwatch.elapsed.inSeconds}s" ));
+                        } else if (stopwatch.elapsed.inSeconds < 40) {
+                          await Clipboard.setData(ClipboardData(text: "Griddio #${DateTime.now().month * 30 + DateTime.now().day}: 🟡 ${stopwatch.elapsed.inSeconds}s" ));
+                        } else {
+                          await Clipboard.setData(ClipboardData(text: "Griddio #${DateTime.now().month * 30 + DateTime.now().day}: 🔴 ${stopwatch.elapsed.inSeconds}s" ));
+                        }
+                      }, 
+                      style: FilledButton.styleFrom(
+                        backgroundColor: Colors.grey,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(gridSquareWidth / 4)
+                        )
                       ),
+                      child: 
+                        Text(
+                          "Share",
+                          style: TextStyle(
+                            color: Colors.blue.shade800,
+                            decoration: TextDecoration.none,
+                            fontSize: gridSquareWidth * 0.6
+                          ),
+                        )
+                    )
+                ),
+                RoundBox(itemColor: Colors.white.withOpacity(0.0), width: gridSquareWidth / 4),
+                Container(
+                  width: gridSquareWidth * 6,
+                  height: gridSquareWidth * 2,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(gridSquareWidth / 4),
+                    color: Colors.grey,
+                  ),
+                  child:
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget> [
+                        Text(
+                          "Next Griddio in:",
+                          style: TextStyle(
+                            color: Colors.black,
+                            decoration: TextDecoration.none,
+                            fontSize: gridSquareWidth * 0.8,
+                          ),
+                        ),
+                        Text(
+                          "${24 - DateTime.now().hour} hrs, ${60 - DateTime.now().minute} min, ${60 - DateTime.now().second} s",
+                          style: TextStyle(
+                            color: Colors.black,
+                            decoration: TextDecoration.none,
+                            fontSize: gridSquareWidth * 0.4,
+                          ),
+                        ),
+                      ],
                     )
                 )
+              ],
             ),
           )
         ]

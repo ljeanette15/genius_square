@@ -175,6 +175,13 @@ class DoubleDragBoxState extends State<DoubleDragBox> {
         onTap: () {
           setState(() {
             rotated = !rotated;
+            position = widget.initPos;
+            if (widget.occupied.contains(prevIndex)) {
+              widget.occupied.remove(prevIndex);
+            }
+            if (widget.occupied.contains(prevIndex2)) {
+              widget.occupied.remove(prevIndex2);
+            }
           });
         },
 
@@ -424,6 +431,16 @@ class TripleDragBoxState extends State<TripleDragBox> {
         onTap: () {
           setState(() {
             rotated = !rotated;
+            position = widget.initPos;
+            if (widget.occupied.contains(prevIndex)) {
+              widget.occupied.remove(prevIndex);
+            }
+            if (widget.occupied.contains(prevIndex2)) {
+              widget.occupied.remove(prevIndex2);
+            }
+            if (widget.occupied.contains(prevIndex3)) {
+              widget.occupied.remove(prevIndex3);
+            }
           });
         },
 
@@ -707,6 +724,19 @@ class QuadDragBoxState extends State<QuadDragBox> {
         onTap: () {
           setState(() {
             rotated = !rotated;
+            position = widget.initPos;
+            if (widget.occupied.contains(prevIndex)) {
+              widget.occupied.remove(prevIndex);
+            }
+            if (widget.occupied.contains(prevIndex2)) {
+              widget.occupied.remove(prevIndex2);
+            }
+            if (widget.occupied.contains(prevIndex3)) {
+              widget.occupied.remove(prevIndex3);
+            }
+            if (widget.occupied.contains(prevIndex4)) {
+              widget.occupied.remove(prevIndex4);
+            }
           });
         },
 
@@ -1215,6 +1245,16 @@ class SmallRState extends State<SmallR> {
         onTap: () {
           setState(() {
             rotated = (rotated + 1) % 4;
+            position = widget.initPos;
+            if (widget.occupied.contains(prevIndex)) {
+              widget.occupied.remove(prevIndex);
+            }
+            if (widget.occupied.contains(prevIndex2)) {
+              widget.occupied.remove(prevIndex2);
+            }
+            if (widget.occupied.contains(prevIndex3)) {
+              widget.occupied.remove(prevIndex3);
+            }
           });
         },
 
@@ -1768,6 +1808,19 @@ class BigRState extends State<BigR> {
         onTap: () {
           setState(() {
             rotated = (rotated + 1) % 4;
+            position = widget.initPos;
+            if (widget.occupied.contains(prevIndex)) {
+              widget.occupied.remove(prevIndex);
+            }
+            if (widget.occupied.contains(prevIndex2)) {
+              widget.occupied.remove(prevIndex2);
+            }
+            if (widget.occupied.contains(prevIndex3)) {
+              widget.occupied.remove(prevIndex3);
+            }
+            if (widget.occupied.contains(prevIndex4)) {
+              widget.occupied.remove(prevIndex4);
+            }
           });
         },
 
@@ -2414,6 +2467,19 @@ class TDragBoxState extends State<TDragBox> {
         onTap: () {
           setState(() {
             rotated = (rotated + 1) % 4;
+            position = widget.initPos;
+            if (widget.occupied.contains(prevIndex)) {
+              widget.occupied.remove(prevIndex);
+            }
+            if (widget.occupied.contains(prevIndex2)) {
+              widget.occupied.remove(prevIndex2);
+            }
+            if (widget.occupied.contains(prevIndex3)) {
+              widget.occupied.remove(prevIndex3);
+            }
+            if (widget.occupied.contains(prevIndex4)) {
+              widget.occupied.remove(prevIndex4);
+            }
           });
         },
 
@@ -3060,6 +3126,19 @@ class SDragBoxState extends State<SDragBox> {
         onTap: () {
           setState(() {
             rotated = !rotated;
+            position = widget.initPos;
+            if (widget.occupied.contains(prevIndex)) {
+              widget.occupied.remove(prevIndex);
+            }
+            if (widget.occupied.contains(prevIndex2)) {
+              widget.occupied.remove(prevIndex2);
+            }
+            if (widget.occupied.contains(prevIndex3)) {
+              widget.occupied.remove(prevIndex3);
+            }
+            if (widget.occupied.contains(prevIndex4)) {
+              widget.occupied.remove(prevIndex4);
+            }
           });
         },
 
