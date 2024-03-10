@@ -31,7 +31,6 @@ class SimpleStopwatchState extends State<SimpleStopwatch> {
       const Duration(seconds: 1),
       (timer) {
         setState(() {
-          print("${stopwatch.elapsed.inSeconds}");
         });
       }
     );

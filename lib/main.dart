@@ -14,7 +14,165 @@ class GeominoesApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: MainPage(),
+      home: InstructionPage(),
+    );
+  }
+}
+
+class InstructionPage extends StatefulWidget {
+  const InstructionPage({super.key});
+
+  @override
+  State<InstructionPage> createState() => InstructionPageState();
+}
+
+class InstructionPageState extends State<InstructionPage> {
+  
+  @override
+  Widget build(BuildContext context) {
+    
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    double boxWidth = (screenWidth < screenHeight) ? screenWidth * 0.8 : screenHeight * 0.8;
+    double boxHeight = screenHeight / 2;
+
+    double vertPadding = (screenWidth < screenHeight) ? ((screenWidth / 50) + 0.1 * (screenHeight - screenWidth)) : screenHeight / 50;
+    double horPadding = (screenWidth < screenHeight) ? screenWidth / 50 : screenHeight / 50;
+
+    double radius = (screenWidth < screenHeight) ? screenWidth / 100 : screenHeight / 100;
+    double borderWeight = (screenWidth < screenHeight) ? screenWidth / 400 : screenHeight / 400;
+
+    return Stack(
+      children: [
+        Positioned(
+          bottom: screenHeight - (screenHeight / 6) + screenHeight / 100,
+          left: (screenWidth - ((screenWidth < screenHeight) ? screenWidth * 0.8 : screenHeight * 0.8)) / 2,
+          child: Container(
+            width: boxWidth,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: Colors.black, width: borderWeight),
+              borderRadius: BorderRadius.circular(radius)
+            ),
+            child: Center(
+              child: Text(
+                "Griddio",
+                style: TextStyle(
+                  fontFamily: "Roboto",
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black,
+                  fontSize: (screenWidth < screenHeight) ? screenWidth / 10 : screenHeight / 10,
+                  decoration: TextDecoration.none,
+                ),
+              ),
+            )
+          )
+        ),
+        
+        Positioned(
+          top: screenHeight / 6,
+          left: (screenWidth - ((screenWidth < screenHeight) ? screenWidth * 0.8 : screenHeight * 0.8)) / 2,
+          child:
+          Container(
+            padding: EdgeInsets.fromLTRB(horPadding, vertPadding, horPadding, vertPadding),
+            width: boxWidth,
+            height: boxHeight, 
+            decoration: BoxDecoration(
+              color: Colors.grey.shade400, 
+              borderRadius: BorderRadius.circular(radius)
+            ),
+            child: Column(
+              children: [
+                Text(
+                  "How To Play:",
+                  style: TextStyle(
+                  fontFamily: "Roboto",
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black,
+                  fontSize: (screenWidth < screenHeight) ? screenWidth / 17 : screenHeight / 17,
+                  decoration: TextDecoration.none,
+                  ),
+                ),
+                SizedBox(height: boxHeight / 30,),
+                Text(
+                  "Fit every piece on the grid as fast as possible.",
+                  style: TextStyle(
+                  fontFamily: "Roboto",
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black,
+                  fontSize: (screenWidth < screenHeight) ? screenWidth / 27 : screenHeight / 27,
+                  decoration: TextDecoration.none,
+                  ),
+                ),
+                Text(
+                  "- Pieces cannot be placed on the dark squares   ",
+                  style: TextStyle(
+                    fontFamily: "Roboto",
+                    fontWeight: FontWeight.w400,
+                    color: Colors.black,
+                    fontSize: (screenWidth < screenHeight) ? screenWidth / 32 : screenHeight / 32,
+                    decoration: TextDecoration.none,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+                Text(
+                  "- To rotate a piece, simply click or tap that piece",
+                  style: TextStyle(
+                    fontFamily: "Roboto",
+                    fontWeight: FontWeight.w400,
+                    color: Colors.black,
+                    fontSize: (screenWidth < screenHeight) ? screenWidth / 32 : screenHeight / 32,
+                    decoration: TextDecoration.none,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+                SizedBox(height: boxHeight / 20,),
+                FilledButton(
+                  onPressed: () async {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (_, __, ___) => MainPage(),
+                        transitionDuration: Duration(milliseconds: 0),
+                        transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
+                      ),
+                    );
+                  }, 
+                    style: FilledButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(radius),
+                      ),
+                      padding: EdgeInsets.fromLTRB(boxWidth / 5, boxHeight / 20, boxWidth / 5, boxHeight / 20)
+                    ),
+                  child: 
+                    Text(
+                      "Start",
+                      style: TextStyle(
+                        fontFamily: "Roboto",
+                        color: Colors.black,
+                        decoration: TextDecoration.none,
+                        fontSize: (screenWidth < screenHeight) ? screenWidth / 20 : screenHeight / 20
+                      ),
+                    )
+                ),
+                SizedBox(height: boxHeight / 20,),
+                Text(
+                  "Come back every day for a new, unique configuration!",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                  fontFamily: "Roboto",
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black,
+                  fontSize: (screenWidth < screenHeight) ? screenWidth / 32 : screenHeight / 32,
+                  decoration: TextDecoration.none,
+                  ),
+                ),
+              ],
+            ),
+          )
+        ),
+      ],
     );
   }
 }
@@ -30,8 +188,8 @@ class MainPage extends StatefulWidget {
 // Contains the state (the meat of the page)
 class MainPageState extends State<MainPage> {
   
-  var gridPosList = List<Offset>.generate(36, (int index) => Offset(0.0, 0.0));
-  var draggableInitPosList = List<Offset>.generate(9, (int index) => Offset(0.0, 0.0));
+  var gridPosList = List<Offset>.generate(36, (int index) => const Offset(0.0, 0.0));
+  var draggableInitPosList = List<Offset>.generate(9, (int index) => const Offset(0.0, 0.0));
   List<int> occupied = [];
   var draggableDraggedBool = false;
   var prevScreenWidth = 0.0;
@@ -44,22 +202,24 @@ class MainPageState extends State<MainPage> {
 
   bool started = false;
 
+  String fontfamily = "Roboto";
+
   @override
   Widget build(BuildContext context) {
 
     // Get screen dimensions to base the size off of
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    double gridDim1 = screenHeight / 2.5;
-    double gridDim2 = screenWidth / 2.5;
+    double gridDim1 = screenHeight / 2.4;
+    double gridDim2 = screenWidth / 2.1;
     double gridDim = (gridDim1 < gridDim2) ? gridDim1 : gridDim2;
     double gridLeft = (screenWidth - gridDim) / 2;
     double gridTop = (screenHeight - gridDim) / 6;
     double gridBottom = gridTop + gridDim;
     double gridRight = gridLeft + gridDim;
-    double bottomSectionHeight = screenHeight - gridBottom;
-    const spacer = 2.0;
+    double spacer = gridDim / 200;
     double gridSquareWidth = (gridDim - (5 * spacer)) / 6;
+    double corners = gridSquareWidth / 12;
     double gws = gridSquareWidth + spacer;
     
     // Get positions of grid squares
@@ -72,39 +232,39 @@ class MainPageState extends State<MainPage> {
     if (!started || (screenWidth != prevScreenWidth || screenHeight != prevScreenHeight)) {
 
       double xbigR = (((screenWidth / 3) - (gws * 3)) / 2);
-      double ybigR = gridBottom + (gridDim / 12) + 35.0;
+      double ybigR = gridBottom + 1.2 * gridSquareWidth;
       draggableInitPosList[0] = Offset(xbigR, ybigR);
 
-      double xT = (((screenWidth / 3) - 3 * gws) / 2);
-      double yT = (gridBottom - 2.4 * gws);
+      double xT = (gridLeft - 3 * gws) / 2;
+      double yT = gridBottom - 2 * gws;
       draggableInitPosList[1] = Offset(xT, yT);
 
-      double xS = 2 * (screenWidth / 3) + (((screenWidth / 3) - (3 * gws)) / 2);
-      double yS = gridBottom - 2.4 * gws;
+      double xS = gridRight + (gridLeft - 3 * gws) / 2;
+      double yS = gridBottom - 2 * gws;
       draggableInitPosList[2] = Offset(xS, yS);
 
       double xQuad = (screenWidth / 3) + (((screenWidth / 3) - (4 * gws)) / 2);
-      double yQuad = gridBottom + (gridDim / 12) + 35.0;
+      double yQuad = gridBottom + 1.2 * gridSquareWidth;
       draggableInitPosList[3] = Offset(xQuad, yQuad);
 
       double xTriple = 2 * (screenWidth / 3) + (((screenWidth / 3) - (3 * gws)) / 2);
-      double yTriple = gridBottom + (gridDim / 12) + 35.0;
+      double yTriple = gridBottom + 1.2 * gridSquareWidth;
       draggableInitPosList[8] = Offset(xTriple, yTriple);
 
       double xSmallR = (((screenWidth / 3) - 2 * gws) / 2);
-      double ySmallR = gridBottom + (gridDim / 2.5) + 120.0;
+      double ySmallR = gridBottom + 4.4 * gws;
       draggableInitPosList[5] = Offset(xSmallR, ySmallR);
 
       double xDouble = (screenWidth / 3) + (((screenWidth / 3) - 2 * gws) / 2);
-      double yDouble = gridBottom + (gridDim / 3) + 180.0;
+      double yDouble = gridBottom + 5.2 * gws;
       draggableInitPosList[7] = Offset(xDouble, yDouble);
 
       double xSingle = (screenWidth / 3) + (((screenWidth / 3) - gws) / 2);
-      double ySingle = gridBottom + (gridBottom / 6) + 110.0;
+      double ySingle = gridBottom + 3.2 * gws;
       draggableInitPosList[6] = Offset(xSingle, ySingle);
 
       double xBig = 2 * (screenWidth / 3) + (((screenWidth / 3) - 2 * gws) / 2);
-      double yBig = gridBottom + (gridDim / 2.5) + 120.0;
+      double yBig = gridBottom + 4.4 * gws;
       draggableInitPosList[4] = Offset(xBig, yBig);
       
       stopwatch.start();
@@ -114,7 +274,6 @@ class MainPageState extends State<MainPage> {
         const Duration(seconds: 1),
         (timer) {
           setState(() {
-            print("${stopwatch.elapsed.inSeconds}");
           });
         }
       );
@@ -142,8 +301,9 @@ class MainPageState extends State<MainPage> {
                     Center(
                       child: 
                         Text(
-                          "${stopwatch.elapsed.inSeconds} s",
+                          "${stopwatch.elapsed.inSeconds}s",
                           style: TextStyle(
+                            fontFamily: fontfamily,
                             fontSize: gridSquareWidth * 1.2,
                             color: Colors.black,
                             fontStyle: FontStyle.normal,
@@ -160,11 +320,11 @@ class MainPageState extends State<MainPage> {
                     FilledButton(
                       onPressed: () async {
                         if (stopwatch.elapsed.inSeconds < 20){
-                          await Clipboard.setData(ClipboardData(text: "Griddio #${DateTime.now().month * 30 + DateTime.now().day}: 🟢 ${stopwatch.elapsed.inSeconds}s" ));
+                          await Clipboard.setData(ClipboardData(text: "Griddio #${getGameNum()}}: 🟢 ${stopwatch.elapsed.inSeconds}s" ));
                         } else if (stopwatch.elapsed.inSeconds < 40) {
-                          await Clipboard.setData(ClipboardData(text: "Griddio #${DateTime.now().month * 30 + DateTime.now().day}: 🟡 ${stopwatch.elapsed.inSeconds}s" ));
+                          await Clipboard.setData(ClipboardData(text: "Griddio #${getGameNum()}: 🟡 ${stopwatch.elapsed.inSeconds}s" ));
                         } else {
-                          await Clipboard.setData(ClipboardData(text: "Griddio #${DateTime.now().month * 30 + DateTime.now().day}: 🔴 ${stopwatch.elapsed.inSeconds}s" ));
+                          await Clipboard.setData(ClipboardData(text: "Griddio #${getGameNum()}: 🔴 ${stopwatch.elapsed.inSeconds}s" ));
                         }
                       }, 
                       style: FilledButton.styleFrom(
@@ -177,6 +337,7 @@ class MainPageState extends State<MainPage> {
                         Text(
                           "Share",
                           style: TextStyle(
+                            fontFamily: fontfamily,
                             color: Colors.blue.shade800,
                             decoration: TextDecoration.none,
                             fontSize: gridSquareWidth * 0.6
@@ -199,6 +360,8 @@ class MainPageState extends State<MainPage> {
                         Text(
                           "Next Griddio in:",
                           style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontFamily: fontfamily,
                             color: Colors.black,
                             decoration: TextDecoration.none,
                             fontSize: gridSquareWidth * 0.8,
@@ -207,6 +370,8 @@ class MainPageState extends State<MainPage> {
                         Text(
                           "${24 - DateTime.now().hour} hrs, ${60 - DateTime.now().minute} min, ${60 - DateTime.now().second} s",
                           style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontFamily: fontfamily,
                             color: Colors.black,
                             decoration: TextDecoration.none,
                             fontSize: gridSquareWidth * 0.4,
@@ -226,7 +391,7 @@ class MainPageState extends State<MainPage> {
       prevScreenHeight = screenHeight;
       prevScreenWidth = screenWidth;
       return Stack(
-        children: <Widget>[
+        children: [
 
           // Timer
           Positioned(
@@ -246,9 +411,9 @@ class MainPageState extends State<MainPage> {
                     Text(
                       "${stopwatch.elapsed.inSeconds}",
                       style: TextStyle(
+                        fontFamily: fontfamily,
                         fontSize: gridSquareWidth * 1.2,
                         color: Colors.black,
-                        fontStyle: FontStyle.normal,
                         decoration: TextDecoration.none
                       ),
                     )
@@ -278,18 +443,20 @@ class MainPageState extends State<MainPage> {
                             Text(
                               "Griddio",
                               style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontFamily: fontfamily,
                                 fontSize: gridSquareWidth * 0.8,
                                 color: Colors.black,
-                                fontStyle: FontStyle.normal,
                                 decoration: TextDecoration.none
                               ),
                             ),
                             Text(
-                              "${DateFormat.yMMMd().format(DateTime.now())}",
+                              DateFormat.yMMMd().format(DateTime.now()),
                               style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontFamily: fontfamily,
                                 fontSize: gridSquareWidth * 0.4,
                                 color: Colors.black,
-                                fontStyle: FontStyle.normal,
                                 decoration: TextDecoration.none
                               ),
                             ),
@@ -300,31 +467,20 @@ class MainPageState extends State<MainPage> {
           ),
 
           // Grid
-          Positioned(
-            left: gridLeft,
-            top: gridTop,
-            child: SizedBox(
-              width: gridDim,
-              height: gridDim,
-              child: GridView(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 6,
-                  crossAxisSpacing: spacer,
-                  mainAxisSpacing: spacer,
+          for (var i = 0; i < 36; i++) ... [
+            Positioned(
+              top: gridTop + (i / 6).floor() * gws,
+              left: gridLeft + (i % 6) * gws,
+              child: Container(
+                width: gridSquareWidth,
+                height: gridSquareWidth,
+                decoration: BoxDecoration(
+                  color: blockerIndeces.contains(i) ? Colors.grey.shade700 : Colors.grey,
+                  borderRadius: BorderRadius.circular(corners),
                 ),
-                children: List<Widget>.generate(36, (int i) {
-                  return Builder(builder: (BuildContext context) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        color: blockerIndeces.contains(i) ? Colors.grey.shade700 : Colors.grey,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    );
-                  });
-                }),
-              ),
+              )
             )
-          ),
+          ],
 
           // Pieces
           BigR(
