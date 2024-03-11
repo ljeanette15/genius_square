@@ -1,31 +1,11 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
+import 'package:genius_square/shapes.dart';
+import 'package:genius_square/functions.dart';
+import 'dart:async';
+import 'package:intl/intl.dart';
+import 'package:flutter/services.dart';
 
 void main() => runApp(const GeominoesApp());
-
-// Functions
-
-List getBlockerIndeces() {
-  var blockerIndeces = List<int>.generate(7, (int index) => index);
-
-  List<int> diceOne = [27, 34, 29, 33, 28, 22];
-  List<int> diceTwo = [3, 35, 16, 23, 17, 10];
-  List<int> diceThree = [15, 26, 9, 21, 14, 20];
-  List<int> diceFour = [0, 32, 18, 25, 19, 12];
-  List<int> diceFive = [5, 30, 5, 5, 30, 30];
-  List<int> diceSix = [13, 7, 8, 2, 1, 6];
-  List<int> diceSeven = [4, 24, 4, 11, 31, 31];
-
-  blockerIndeces[0] = diceOne[Random().nextInt(6)];
-  blockerIndeces[1] = diceTwo[Random().nextInt(6)];
-  blockerIndeces[2] = diceThree[Random().nextInt(6)];
-  blockerIndeces[3] = diceFour[Random().nextInt(6)];
-  blockerIndeces[4] = diceFive[Random().nextInt(6)];
-  blockerIndeces[5] = diceSix[Random().nextInt(6)];
-  blockerIndeces[6] = diceSeven[Random().nextInt(6)];
-
-  return blockerIndeces;
-}
 
 // Main app Widget
 class GeominoesApp extends StatelessWidget {
@@ -34,7 +14,165 @@ class GeominoesApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: MainPage(),
+      home: InstructionPage(),
+    );
+  }
+}
+
+class InstructionPage extends StatefulWidget {
+  const InstructionPage({super.key});
+
+  @override
+  State<InstructionPage> createState() => InstructionPageState();
+}
+
+class InstructionPageState extends State<InstructionPage> {
+  
+  @override
+  Widget build(BuildContext context) {
+    
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    double boxWidth = (screenWidth < screenHeight) ? screenWidth * 0.8 : screenHeight * 0.8;
+    double boxHeight = screenHeight / 2;
+
+    double vertPadding = (screenWidth < screenHeight) ? ((screenWidth / 50) + 0.1 * (screenHeight - screenWidth)) : screenHeight / 50;
+    double horPadding = (screenWidth < screenHeight) ? screenWidth / 50 : screenHeight / 50;
+
+    double radius = (screenWidth < screenHeight) ? screenWidth / 100 : screenHeight / 100;
+    double borderWeight = (screenWidth < screenHeight) ? screenWidth / 400 : screenHeight / 400;
+
+    return Stack(
+      children: [
+        Positioned(
+          bottom: screenHeight - (screenHeight / 6) + screenHeight / 100,
+          left: (screenWidth - ((screenWidth < screenHeight) ? screenWidth * 0.8 : screenHeight * 0.8)) / 2,
+          child: Container(
+            width: boxWidth,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: Colors.black, width: borderWeight),
+              borderRadius: BorderRadius.circular(radius)
+            ),
+            child: Center(
+              child: Text(
+                "Griddio",
+                style: TextStyle(
+                  fontFamily: "Roboto",
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black,
+                  fontSize: (screenWidth < screenHeight) ? screenWidth / 10 : screenHeight / 10,
+                  decoration: TextDecoration.none,
+                ),
+              ),
+            )
+          )
+        ),
+        
+        Positioned(
+          top: screenHeight / 6,
+          left: (screenWidth - ((screenWidth < screenHeight) ? screenWidth * 0.8 : screenHeight * 0.8)) / 2,
+          child:
+          Container(
+            padding: EdgeInsets.fromLTRB(horPadding, vertPadding, horPadding, vertPadding),
+            width: boxWidth,
+            height: boxHeight, 
+            decoration: BoxDecoration(
+              color: Colors.grey.shade400, 
+              borderRadius: BorderRadius.circular(radius)
+            ),
+            child: Column(
+              children: [
+                Text(
+                  "How To Play:",
+                  style: TextStyle(
+                  fontFamily: "Roboto",
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black,
+                  fontSize: (screenWidth < screenHeight) ? screenWidth / 17 : screenHeight / 17,
+                  decoration: TextDecoration.none,
+                  ),
+                ),
+                SizedBox(height: boxHeight / 30,),
+                Text(
+                  "Fit every piece on the grid as fast as possible.",
+                  style: TextStyle(
+                  fontFamily: "Roboto",
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black,
+                  fontSize: (screenWidth < screenHeight) ? screenWidth / 27 : screenHeight / 27,
+                  decoration: TextDecoration.none,
+                  ),
+                ),
+                Text(
+                  "- Pieces cannot be placed on the dark squares   ",
+                  style: TextStyle(
+                    fontFamily: "Roboto",
+                    fontWeight: FontWeight.w400,
+                    color: Colors.black,
+                    fontSize: (screenWidth < screenHeight) ? screenWidth / 32 : screenHeight / 32,
+                    decoration: TextDecoration.none,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+                Text(
+                  "- To rotate a piece, simply click or tap that piece",
+                  style: TextStyle(
+                    fontFamily: "Roboto",
+                    fontWeight: FontWeight.w400,
+                    color: Colors.black,
+                    fontSize: (screenWidth < screenHeight) ? screenWidth / 32 : screenHeight / 32,
+                    decoration: TextDecoration.none,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+                SizedBox(height: boxHeight / 20,),
+                FilledButton(
+                  onPressed: () async {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (_, __, ___) => MainPage(),
+                        transitionDuration: Duration(milliseconds: 0),
+                        transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
+                      ),
+                    );
+                  }, 
+                    style: FilledButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(radius),
+                      ),
+                      padding: EdgeInsets.fromLTRB(boxWidth / 5, boxHeight / 20, boxWidth / 5, boxHeight / 20)
+                    ),
+                  child: 
+                    Text(
+                      "Start",
+                      style: TextStyle(
+                        fontFamily: "Roboto",
+                        color: Colors.black,
+                        decoration: TextDecoration.none,
+                        fontSize: (screenWidth < screenHeight) ? screenWidth / 20 : screenHeight / 20
+                      ),
+                    )
+                ),
+                SizedBox(height: boxHeight / 20,),
+                Text(
+                  "Come back every day for a new, unique configuration!",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                  fontFamily: "Roboto",
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black,
+                  fontSize: (screenWidth < screenHeight) ? screenWidth / 32 : screenHeight / 32,
+                  decoration: TextDecoration.none,
+                  ),
+                ),
+              ],
+            ),
+          )
+        ),
+      ],
     );
   }
 }
@@ -47,213 +185,24 @@ class MainPage extends StatefulWidget {
   State<MainPage> createState() => MainPageState();
 }
 
-// Create a class for the red square
-class RoundBox extends StatelessWidget {
-  final Color itemColor;
-  final double width;
-
-  const RoundBox({
-    super.key,
-    required this.itemColor,
-    required this.width,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      height: width,
-      decoration: BoxDecoration(
-        color: itemColor,
-        borderRadius: BorderRadius.circular(5)
-      ),
-    );
-  }
-}
-
-// Class for the dragged boxes
-class DragBox extends StatefulWidget {
-  final Offset initPos;
-  final Offset pos;
-  final Color itemColor;
-  final double width;
-  final int identifier;
-
-  const DragBox(this.initPos, this.pos, this.itemColor, this.width, this.identifier);
-
-  @override
-  DragBoxState createState() => DragBoxState();
-}
-
-class DragBoxState extends State<DragBox> {
-  Offset position = const Offset(0.0, 0.0);
-  bool cancelled = false;
-
-  @override
-  Widget build(BuildContext context) {
-    if(cancelled == true){
-      position = widget.initPos;
-    } else {
-      position = widget.pos;
-    }
-    return Positioned(
-      left: position.dx,
-      top: position.dy,
-      child: Draggable(
-        data: widget.identifier,
-        onDragCompleted: () {
-          setState(() {
-            cancelled = false;
-            position = widget.pos;
-          });
-        },
-        onDraggableCanceled: (velocity, offset) {
-          setState(() {
-            cancelled = true;
-          });
-        },
-        feedback: RoundBox(itemColor: widget.itemColor.withOpacity(0.2), width: widget.width * 0.9),
-        child: RoundBox(itemColor: widget.itemColor, width: widget.width),
-      )
-    );
-  }
-}
-
-
-class DragBoxTwo extends StatefulWidget {
-  final Offset initPos;
-  final Offset pos;
-  final Color itemColor;
-  final double width;
-  final int identifier;
-
-  const DragBoxTwo(this.initPos, this.pos, this.itemColor, this.width, this.identifier);
-
-  @override
-  DragBoxTwoState createState() => DragBoxTwoState();
-}
-
-class DragBoxTwoState extends State<DragBoxTwo> {
-  Offset position = const Offset(0.0, 0.0);
-  bool cancelled = false;
-
-  @override
-  Widget build(BuildContext context) {
-    if(cancelled == true){
-      position = widget.initPos;
-    } else {
-      position = widget.pos;
-    }
-    return Positioned(
-      left: position.dx,
-      top: position.dy,
-      child: Draggable(
-        data: widget.identifier,
-        onDragCompleted: () {
-          setState(() {
-            cancelled = false;
-            position = widget.pos;
-          });
-        },
-        onDraggableCanceled: (velocity, offset) {
-          setState(() {
-            cancelled = true;
-          });
-        },
-        feedback: Row(
-          children: <Widget> [
-            RoundBox(itemColor: widget.itemColor.withOpacity(0.2), width: widget.width * 0.9),
-            RoundBox(itemColor: widget.itemColor.withOpacity(0.2), width: widget.width * 0.9),
-          ]
-        ),
-        child: Row(
-          children: <Widget> [
-            RoundBox(itemColor: widget.itemColor, width: widget.width),
-            RoundBox(itemColor: Colors.white.withOpacity(1), width: 3,),
-            RoundBox(itemColor: widget.itemColor, width: widget.width),
-          ]
-        ),
-      )
-    );
-  }
-}
-
-
-class DragBoxThree extends StatefulWidget {
-  final Offset initPos;
-  final Offset pos;
-  final Color itemColor;
-  final double width;
-  final int identifier;
-
-  const DragBoxThree(this.initPos, this.pos, this.itemColor, this.width, this.identifier);
-
-  @override
-  DragBoxThreeState createState() => DragBoxThreeState();
-}
-
-class DragBoxThreeState extends State<DragBoxThree> {
-  Offset position = const Offset(0.0, 0.0);
-  bool cancelled = false;
-
-  @override
-  Widget build(BuildContext context) {
-    if(cancelled == true){
-      position = widget.initPos;
-    } else {
-      position = widget.pos;
-    }
-    return Positioned(
-      left: position.dx,
-      top: position.dy,
-      child: Draggable(
-        data: widget.identifier,
-        onDragCompleted: () {
-          setState(() {
-            cancelled = false;
-            position = widget.pos;
-          });
-        },
-        onDraggableCanceled: (velocity, offset) {
-          setState(() {
-            cancelled = true;
-          });
-        },
-        feedback: Row(
-          children: <Widget> [
-            RoundBox(itemColor: widget.itemColor.withOpacity(0.2), width: widget.width * 0.9),
-            RoundBox(itemColor: Colors.white.withOpacity(1), width: 3,),
-            RoundBox(itemColor: widget.itemColor.withOpacity(0.2), width: widget.width * 0.9),
-            RoundBox(itemColor: Colors.white.withOpacity(1), width: 3,),
-            RoundBox(itemColor: widget.itemColor.withOpacity(0.2), width: widget.width * 0.9),
-          ]
-        ),
-        child: Row(
-          children: <Widget> [
-            RoundBox(itemColor: widget.itemColor, width: widget.width),
-            RoundBox(itemColor: Colors.white.withOpacity(1), width: 3,),
-            RoundBox(itemColor: widget.itemColor, width: widget.width),
-            RoundBox(itemColor: Colors.white.withOpacity(1), width: 3,),
-            RoundBox(itemColor: widget.itemColor, width: widget.width),
-          ]
-        ),
-      )
-    );
-  }
-}
-
-
 // Contains the state (the meat of the page)
 class MainPageState extends State<MainPage> {
   
-  var gridPosList = List<Offset>.generate(36, (int index) => Offset(0.0, 0.0));
-  var draggableCurrentPosList = List<Offset>.generate(9, (int index) => Offset(0.0, 0.0));
-  var draggableInitPosList = List<Offset>.generate(9, (int index) => Offset(0.0, 0.0));
+  var gridPosList = List<Offset>.generate(36, (int index) => const Offset(0.0, 0.0));
+  var draggableInitPosList = List<Offset>.generate(9, (int index) => const Offset(0.0, 0.0));
+  List<int> occupied = [];
   var draggableDraggedBool = false;
   var prevScreenWidth = 0.0;
   var prevScreenHeight = 0.0;
 
-  var blockerIndeces = getBlockerIndeces();
+  List<int> blockerIndeces = getBlockerIndeces();
+
+  Timer? timer;
+  Stopwatch stopwatch = Stopwatch();
+
+  bool started = false;
+
+  String fontfamily = "Roboto";
 
   @override
   Widget build(BuildContext context) {
@@ -261,13 +210,17 @@ class MainPageState extends State<MainPage> {
     // Get screen dimensions to base the size off of
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    double gridDim = screenHeight / 2.5;
+    double gridDim1 = screenHeight / 2.4;
+    double gridDim2 = screenWidth / 2.1;
+    double gridDim = (gridDim1 < gridDim2) ? gridDim1 : gridDim2;
     double gridLeft = (screenWidth - gridDim) / 2;
     double gridTop = (screenHeight - gridDim) / 6;
     double gridBottom = gridTop + gridDim;
-    double bottomSectionHeight = screenHeight - gridBottom;
-    const spacer = 3.0;
+    double gridRight = gridLeft + gridDim;
+    double spacer = gridDim / 200;
     double gridSquareWidth = (gridDim - (5 * spacer)) / 6;
+    double corners = gridSquareWidth / 12;
+    double gws = gridSquareWidth + spacer;
     
     // Get positions of grid squares
     for(var i = 0; i < 36; i++) {
@@ -275,80 +228,388 @@ class MainPageState extends State<MainPage> {
                               gridTop + ((i ~/ 6) * (gridSquareWidth + spacer)));
     }
 
-    // Set positions of draggables if this is the initialization
-    if (!draggableDraggedBool || (screenWidth != prevScreenWidth || screenHeight != prevScreenHeight)) {
-      for(var i = 0; i < 9; i++) {
-        double x = (i % 3) * (screenWidth / 3) + (((screenWidth / 3) - gridSquareWidth) / 2);
-        double y = (gridBottom + (((i ~/ 3) + (1 / 2)) * (bottomSectionHeight / 3)) - (gridSquareWidth / 2));
-        draggableInitPosList[i] = Offset(x, y);
-        draggableCurrentPosList[i] = Offset(x, y);
-      }
+    // Set positions of draggables if this is the initialization (or when screen size changes)
+    if (!started || (screenWidth != prevScreenWidth || screenHeight != prevScreenHeight)) {
+
+      double xbigR = (((screenWidth / 3) - (gws * 3)) / 2);
+      double ybigR = gridBottom + 1.2 * gridSquareWidth;
+      draggableInitPosList[0] = Offset(xbigR, ybigR);
+
+      double xT = (gridLeft - 3 * gws) / 2;
+      double yT = gridBottom - 2 * gws;
+      draggableInitPosList[1] = Offset(xT, yT);
+
+      double xS = gridRight + (gridLeft - 3 * gws) / 2;
+      double yS = gridBottom - 2 * gws;
+      draggableInitPosList[2] = Offset(xS, yS);
+
+      double xQuad = (screenWidth / 3) + (((screenWidth / 3) - (4 * gws)) / 2);
+      double yQuad = gridBottom + 1.2 * gridSquareWidth;
+      draggableInitPosList[3] = Offset(xQuad, yQuad);
+
+      double xTriple = 2 * (screenWidth / 3) + (((screenWidth / 3) - (3 * gws)) / 2);
+      double yTriple = gridBottom + 1.2 * gridSquareWidth;
+      draggableInitPosList[8] = Offset(xTriple, yTriple);
+
+      double xSmallR = (((screenWidth / 3) - 2 * gws) / 2);
+      double ySmallR = gridBottom + 4.4 * gws;
+      draggableInitPosList[5] = Offset(xSmallR, ySmallR);
+
+      double xDouble = (screenWidth / 3) + (((screenWidth / 3) - 2 * gws) / 2);
+      double yDouble = gridBottom + 5.2 * gws;
+      draggableInitPosList[7] = Offset(xDouble, yDouble);
+
+      double xSingle = (screenWidth / 3) + (((screenWidth / 3) - gws) / 2);
+      double ySingle = gridBottom + 3.2 * gws;
+      draggableInitPosList[6] = Offset(xSingle, ySingle);
+
+      double xBig = 2 * (screenWidth / 3) + (((screenWidth / 3) - 2 * gws) / 2);
+      double yBig = gridBottom + 4.4 * gws;
+      draggableInitPosList[4] = Offset(xBig, yBig);
+      
+      stopwatch.start();
+      started = true;
+
+      timer = Timer.periodic(
+        const Duration(seconds: 1),
+        (timer) {
+          setState(() {
+          });
+        }
+      );
+
     }
 
-    prevScreenHeight = screenHeight;
-    prevScreenWidth = screenWidth;
-
-    return Stack(
-      children: <Widget>[
-        // Grid
-        Positioned(
-          left: gridLeft,
-          top: gridTop,
-          child: SizedBox(
-            width: gridDim,
-            height: gridDim,
-            child: GridView(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 6,
-                crossAxisSpacing: spacer,
-                mainAxisSpacing: spacer,
-              ),
-              children: List<Widget>.generate(36, (int i) {
-                return Builder(builder: (BuildContext context) {
-                  return DragTarget<int> (
-                    builder: (
-                      BuildContext context,
-                      List<dynamic> accepted,
-                      List<dynamic> rejected,
-                    ) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: blockerIndeces.contains(i) ? Colors.white : Colors.grey,
-                          borderRadius: BorderRadius.circular(4),
+    if (occupied.length == 29) {
+      stopwatch.stop();
+      return Stack(
+        children: <Widget> [
+          Positioned(
+            top: (screenHeight / 2) - (gridSquareWidth * 6),
+            left: (screenWidth / 2) - (gridSquareWidth * 3),
+            child: 
+            Column(
+              children: <Widget> [
+                Container(
+                  decoration: BoxDecoration(
+                    color: getStopwatchColor(stopwatch.elapsed.inSeconds),
+                    borderRadius: BorderRadius.circular(gridSquareWidth)
+                  ),
+                  width: gridSquareWidth * 6, 
+                  height: gridSquareWidth * 3, 
+                  child: 
+                    Center(
+                      child: 
+                        Text(
+                          "${stopwatch.elapsed.inSeconds}s",
+                          style: TextStyle(
+                            fontFamily: fontfamily,
+                            fontSize: gridSquareWidth * 1.2,
+                            color: Colors.black,
+                            fontStyle: FontStyle.normal,
+                            decoration: TextDecoration.none
+                          ),
+                        )
+                    )
+                ),
+                RoundBox(itemColor: Colors.white.withOpacity(0.0), width: gridSquareWidth / 2),
+                SizedBox(
+                  width: gridSquareWidth * 6, 
+                  height: gridSquareWidth,
+                  child:                 
+                    FilledButton(
+                      onPressed: () async {
+                        if (stopwatch.elapsed.inSeconds < 20){
+                          await Clipboard.setData(ClipboardData(text: "Griddio #${getGameNum()}}: 🟢 ${stopwatch.elapsed.inSeconds}s" ));
+                        } else if (stopwatch.elapsed.inSeconds < 40) {
+                          await Clipboard.setData(ClipboardData(text: "Griddio #${getGameNum()}: 🟡 ${stopwatch.elapsed.inSeconds}s" ));
+                        } else {
+                          await Clipboard.setData(ClipboardData(text: "Griddio #${getGameNum()}: 🔴 ${stopwatch.elapsed.inSeconds}s" ));
+                        }
+                      }, 
+                      style: FilledButton.styleFrom(
+                        backgroundColor: Colors.grey,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(gridSquareWidth / 4)
+                        )
+                      ),
+                      child: 
+                        Text(
+                          "Share",
+                          style: TextStyle(
+                            fontFamily: fontfamily,
+                            color: Colors.blue.shade800,
+                            decoration: TextDecoration.none,
+                            fontSize: gridSquareWidth * 0.6
+                          ),
+                        )
+                    )
+                ),
+                RoundBox(itemColor: Colors.white.withOpacity(0.0), width: gridSquareWidth / 4),
+                Container(
+                  width: gridSquareWidth * 6,
+                  height: gridSquareWidth * 2,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(gridSquareWidth / 4),
+                    color: Colors.grey,
+                  ),
+                  child:
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget> [
+                        Text(
+                          "Next Griddio in:",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontFamily: fontfamily,
+                            color: Colors.black,
+                            decoration: TextDecoration.none,
+                            fontSize: gridSquareWidth * 0.8,
+                          ),
                         ),
-                      );
-                    },
-                    onAccept: (int ID) {
-                      if (!blockerIndeces.contains(i)) {
-                        setState(() {
-                          draggableDraggedBool = true;
-                          draggableCurrentPosList[ID] = gridPosList[i];
-                        });
-                      }
-                    },
-                  );
-                });
-              }),
+                        Text(
+                          "${24 - DateTime.now().hour} hrs, ${60 - DateTime.now().minute} min, ${60 - DateTime.now().second} s",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontFamily: fontfamily,
+                            color: Colors.black,
+                            decoration: TextDecoration.none,
+                            fontSize: gridSquareWidth * 0.4,
+                          ),
+                        ),
+                      ],
+                    )
+                )
+              ],
             ),
           )
-        ),
+        ]
+      );
 
-        // Pieces
-        DragBox(draggableInitPosList[0], draggableCurrentPosList[0], Colors.red, gridSquareWidth, 0),
-        
-        DragBoxTwo(draggableInitPosList[1], draggableCurrentPosList[1], Colors.orange, gridSquareWidth, 1),
+    }
+    else {
+      prevScreenHeight = screenHeight;
+      prevScreenWidth = screenWidth;
+      return Stack(
+        children: [
 
-        DragBoxThree(draggableInitPosList[2], draggableCurrentPosList[2], Colors.yellow, gridSquareWidth, 2),
-        
-        DragBox(draggableInitPosList[3], draggableCurrentPosList[3], Colors.green, gridSquareWidth, 3),
-        
-        DragBox(draggableInitPosList[4], draggableCurrentPosList[4], Colors.teal, gridSquareWidth, 4),
-        DragBox(draggableInitPosList[5], draggableCurrentPosList[5], Colors.cyan, gridSquareWidth, 5),
-        DragBox(draggableInitPosList[6], draggableCurrentPosList[6], Colors.blue, gridSquareWidth, 6),
-        DragBox(draggableInitPosList[7], draggableCurrentPosList[7], Colors.indigo, gridSquareWidth, 7),
-        DragBox(draggableInitPosList[8], draggableCurrentPosList[8], Colors.purple, gridSquareWidth, 8),
+          // Timer
+          Positioned(
+            top: gridTop,
+            left: (gridLeft / 2) - (gridSquareWidth * 1.5),
+            child: 
+            Container(
+              decoration: BoxDecoration(
+                color: getStopwatchColor(stopwatch.elapsed.inSeconds),
+                borderRadius: BorderRadius.circular(gridSquareWidth)
+              ),
+              width: gridSquareWidth * 3, 
+              height: gridSquareWidth * 3, 
+              child: 
+                Center(
+                  child: 
+                    Text(
+                      "${stopwatch.elapsed.inSeconds}",
+                      style: TextStyle(
+                        fontFamily: fontfamily,
+                        fontSize: gridSquareWidth * 1.2,
+                        color: Colors.black,
+                        decoration: TextDecoration.none
+                      ),
+                    )
+                ),
+            )
+          ),
 
-      ]
-    );
+          // Date
+          Positioned(
+            top: gridTop,
+            left: gridRight + ((screenWidth - gridRight) / 2) - gridSquareWidth * 1.5,
+            child: 
+              Container(
+                width: gridSquareWidth * 3,
+                height: gridSquareWidth * 3,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.black),
+                  borderRadius: BorderRadius.circular(gridSquareWidth)
+                ),
+                child: 
+                    Center(
+                      child:
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Griddio",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontFamily: fontfamily,
+                                fontSize: gridSquareWidth * 0.8,
+                                color: Colors.black,
+                                decoration: TextDecoration.none
+                              ),
+                            ),
+                            Text(
+                              DateFormat.yMMMd().format(DateTime.now()),
+                              style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontFamily: fontfamily,
+                                fontSize: gridSquareWidth * 0.4,
+                                color: Colors.black,
+                                decoration: TextDecoration.none
+                              ),
+                            ),
+                          ],
+                        )
+                    ),
+              )
+          ),
+
+          // Grid
+          for (var i = 0; i < 36; i++) ... [
+            Positioned(
+              top: gridTop + (i / 6).floor() * gws,
+              left: gridLeft + (i % 6) * gws,
+              child: Container(
+                width: gridSquareWidth,
+                height: gridSquareWidth,
+                decoration: BoxDecoration(
+                  color: blockerIndeces.contains(i) ? Colors.grey.shade700 : Colors.grey,
+                  borderRadius: BorderRadius.circular(corners),
+                ),
+              )
+            )
+          ],
+
+          // Pieces
+          BigR(
+            () {setState(() {
+            });}, 
+            draggableInitPosList[0], 
+            Colors.red, 
+            gridSquareWidth, 
+            spacer, gridLeft, 
+            gridRight, 
+            gridTop, 
+            gridBottom, 
+            blockerIndeces, 
+            occupied, 
+            0),
+          TDragBox(
+            () {setState(() {
+            });}, 
+            draggableInitPosList[1], 
+            Colors.orange, 
+            gridSquareWidth, 
+            spacer, 
+            gridLeft, 
+            gridRight, 
+            gridTop, 
+            gridBottom, 
+            blockerIndeces, 
+            occupied, 
+            1),
+          SDragBox(
+            () {setState(() {
+            });}, 
+            draggableInitPosList[2], 
+            Colors.yellow, 
+            gridSquareWidth, 
+            spacer, 
+            gridLeft, 
+            gridRight, 
+            gridTop, 
+            gridBottom, 
+            blockerIndeces, 
+            occupied, 
+            2),
+          QuadDragBox(
+            () {setState(() {
+            });}, 
+            draggableInitPosList[3], 
+            Colors.green, 
+            gridSquareWidth, 
+            spacer, 
+            gridLeft, 
+            gridRight, 
+            gridTop, 
+            gridBottom, 
+            blockerIndeces, 
+            occupied, 
+            3),
+          BigDragBox(
+            () {setState(() {
+            });},           
+            draggableInitPosList[4], 
+            Colors.teal, 
+            gridSquareWidth, 
+            spacer, 
+            gridLeft, 
+            gridRight, 
+            gridTop, 
+            gridBottom, 
+            blockerIndeces, 
+            occupied, 
+            4),
+          SmallR(
+            () {setState(() {
+            });},          
+            draggableInitPosList[5], 
+            Colors.cyan, 
+            gridSquareWidth, 
+            spacer, 
+            gridLeft, 
+            gridRight, 
+            gridTop, 
+            gridBottom, 
+            blockerIndeces, 
+            occupied, 
+            5),
+          SingleDragBox(
+            () {setState(() {
+            });},           
+            draggableInitPosList[6], 
+            Colors.blue, 
+            gridSquareWidth, 
+            spacer, 
+            gridLeft, 
+            gridRight, 
+            gridTop, 
+            gridBottom, 
+            blockerIndeces, 
+            occupied, 
+            6),
+          DoubleDragBox(
+            () {setState(() {
+            });}, 
+            draggableInitPosList[7], 
+            Colors.indigo, 
+            gridSquareWidth, 
+            spacer, gridLeft, 
+            gridRight, gridTop, 
+            gridBottom, 
+            blockerIndeces, 
+            occupied, 
+            7
+          ),
+          TripleDragBox(
+            () {setState(() {
+            });}, 
+            draggableInitPosList[8], 
+            Colors.purple, 
+            gridSquareWidth, 
+            spacer, 
+            gridLeft, 
+            gridRight, 
+            gridTop, 
+            gridBottom, 
+            blockerIndeces, 
+            occupied, 
+            8),
+
+        ]
+      );
+    }
   }
 }
