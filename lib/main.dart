@@ -4,6 +4,7 @@ import 'package:genius_square/functions.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
+import 'package:share_plus/share_plus.dart';
 
 void main() => runApp(const GeominoesApp());
 
@@ -117,6 +118,17 @@ class InstructionPageState extends State<InstructionPage> {
                 ),
                 Text(
                   "- To rotate a piece, simply click or tap that piece",
+                  style: TextStyle(
+                    fontFamily: "Roboto",
+                    fontWeight: FontWeight.w400,
+                    color: Colors.black,
+                    fontSize: (screenWidth < screenHeight) ? screenWidth / 32 : screenHeight / 32,
+                    decoration: TextDecoration.none,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+                Text(
+                  "- There may be multiple corect solutions",
                   style: TextStyle(
                     fontFamily: "Roboto",
                     fontWeight: FontWeight.w400,
@@ -320,12 +332,18 @@ class MainPageState extends State<MainPage> {
                     FilledButton(
                       onPressed: () async {
                         if (stopwatch.elapsed.inSeconds < 20){
-                          await Clipboard.setData(ClipboardData(text: "Griddio #${getGameNum()}}: 🟢 ${stopwatch.elapsed.inSeconds}s" ));
+                          Share.share("Griddio #${getGameNum()}: 🟢 ${stopwatch.elapsed.inSeconds}s \n https://griddio2.web.app");
                         } else if (stopwatch.elapsed.inSeconds < 40) {
-                          await Clipboard.setData(ClipboardData(text: "Griddio #${getGameNum()}: 🟡 ${stopwatch.elapsed.inSeconds}s" ));
+                          Share.share("Griddio #${getGameNum()}: 🟡 ${stopwatch.elapsed.inSeconds}s \n https://griddio2.web.app");
                         } else {
-                          await Clipboard.setData(ClipboardData(text: "Griddio #${getGameNum()}: 🔴 ${stopwatch.elapsed.inSeconds}s" ));
+                          Share.share("Griddio #${getGameNum()}: 🔴 ${stopwatch.elapsed.inSeconds}s \n https://griddio2.web.app");
                         }
+                        //   await Clipboard.setData(ClipboardData(text: "Griddio #${getGameNum()}: 🟢 ${stopwatch.elapsed.inSeconds}s \n https://griddio2.web.app" ));
+                        // } else if (stopwatch.elapsed.inSeconds < 40) {
+                        //   await Clipboard.setData(ClipboardData(text: "Griddio #${getGameNum()}: 🟡 ${stopwatch.elapsed.inSeconds}s \n https://griddio2.web.app" ));
+                        // } else {
+                        //   await Clipboard.setData(ClipboardData(text: "Griddio #${getGameNum()}: 🔴 ${stopwatch.elapsed.inSeconds}s \n https://griddio2.web.app" ));
+                        // }
                       }, 
                       style: FilledButton.styleFrom(
                         backgroundColor: Colors.grey,
@@ -368,7 +386,7 @@ class MainPageState extends State<MainPage> {
                           ),
                         ),
                         Text(
-                          "${24 - DateTime.now().hour} hrs, ${60 - DateTime.now().minute} min, ${60 - DateTime.now().second} s",
+                          "${23 - DateTime.now().hour} hrs, ${59 - DateTime.now().minute} min, ${60 - DateTime.now().second} s",
                           style: TextStyle(
                             fontWeight: FontWeight.w400,
                             fontFamily: fontfamily,
