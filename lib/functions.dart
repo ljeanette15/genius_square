@@ -1,4 +1,3 @@
-import "package:flutter/material.dart";
 
 int getMonthDaysElapsed(int month) {
   if (month == 1) {
@@ -35,7 +34,7 @@ int getGameNum() {
   return gameNum;
 }
 
-// Functions
+// TODO: Need to make blocker indeces more random. Right now only one really changes
 List<int> getBlockerIndeces() {
 
   int gameNum = getGameNum();
@@ -59,16 +58,4 @@ List<int> getBlockerIndeces() {
   blockerIndeces[6] = diceSeven[(gameNum / (6 * 6 * 6 * 6 * 6 * 4)).floor() % 2];
 
   return blockerIndeces;
-}
-
-MaterialColor getStopwatchColor(seconds) {
-  if (seconds < 20) {
-    return Colors.green;
-  }
-  else if (seconds < 40) {
-    return Colors.yellow;
-  }
-  else {
-    return Colors.red;
-  }
 }

@@ -38,3 +38,17 @@ class SimpleStopwatchState extends State<SimpleStopwatch> {
     return Text("${stopwatch.elapsed.inSeconds}");
   }
 }
+
+MaterialColor getStopwatchColor(seconds) {
+  if (seconds < 25) {
+    return Colors.green;
+  }
+  else if (seconds < 60) {
+    return Colors.yellow;
+  }
+  else if (seconds < 90) {
+    return Colors.orange;
+  } else {
+    return Colors.red;
+  }
+}

@@ -241,7 +241,6 @@ class DoubleDragBoxState extends State<DoubleDragBox> {
 
                     widget.occupied.add(index);
                     widget.occupied.add(index2);
-
                     widget.onUpdate();
                     
                     prevIndex = index;

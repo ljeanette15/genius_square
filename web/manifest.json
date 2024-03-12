@@ -1,11 +1,11 @@
 {
-    "name": "genius_square",
-    "short_name": "genius_square",
+    "name": "griddio",
+    "short_name": "griddio",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "A daily puzzle solving web application.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

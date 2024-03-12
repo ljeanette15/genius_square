@@ -1,4 +1,4 @@
-# genius_square
+# griddio
 
 A new Flutter project.
 

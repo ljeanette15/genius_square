@@ -3,8 +3,8 @@ import 'package:genius_square/shapes.dart';
 import 'package:genius_square/functions.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
-import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:genius_square/stopwatch.dart';
 
 void main() => runApp(const GeominoesApp());
 
@@ -128,7 +128,7 @@ class InstructionPageState extends State<InstructionPage> {
                   textAlign: TextAlign.left,
                 ),
                 Text(
-                  "- There may be multiple corect solutions",
+                  "- There may be multiple correct solutions            ",
                   style: TextStyle(
                     fontFamily: "Roboto",
                     fontWeight: FontWeight.w400,
@@ -144,8 +144,8 @@ class InstructionPageState extends State<InstructionPage> {
                     Navigator.push(
                       context,
                       PageRouteBuilder(
-                        pageBuilder: (_, __, ___) => MainPage(),
-                        transitionDuration: Duration(milliseconds: 0),
+                        pageBuilder: (_, __, ___) => const MainPage(),
+                        transitionDuration: const Duration(milliseconds: 0),
                         transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
                       ),
                     );
@@ -234,6 +234,8 @@ class MainPageState extends State<MainPage> {
     double corners = gridSquareWidth / 12;
     double gws = gridSquareWidth + spacer;
     
+    print(occupied);
+
     // Get positions of grid squares
     for(var i = 0; i < 36; i++) {
       gridPosList[i] = Offset(gridLeft + ((i % 6) * (gridSquareWidth + spacer)), 
@@ -302,6 +304,7 @@ class MainPageState extends State<MainPage> {
             child: 
             Column(
               children: <Widget> [
+                // TODO: If the time is less than 15s, this should be a star instead of a normal box
                 Container(
                   decoration: BoxDecoration(
                     color: getStopwatchColor(stopwatch.elapsed.inSeconds),
@@ -331,13 +334,22 @@ class MainPageState extends State<MainPage> {
                   child:                 
                     FilledButton(
                       onPressed: () async {
-                        if (stopwatch.elapsed.inSeconds < 20){
+                        if (stopwatch.elapsed.inSeconds < 15){
+                          Share.share("Griddio #${getGameNum()}: ⭐️ ${stopwatch.elapsed.inSeconds}s \n https://griddio2.web.app");
+                        } else if (stopwatch.elapsed.inSeconds < 25) {
                           Share.share("Griddio #${getGameNum()}: 🟢 ${stopwatch.elapsed.inSeconds}s \n https://griddio2.web.app");
-                        } else if (stopwatch.elapsed.inSeconds < 40) {
+                        } else if (stopwatch.elapsed.inSeconds < 60){
                           Share.share("Griddio #${getGameNum()}: 🟡 ${stopwatch.elapsed.inSeconds}s \n https://griddio2.web.app");
-                        } else {
+                        } else if (stopwatch.elapsed.inSeconds < 90){
+                          Share.share("Griddio #${getGameNum()}: 🟠 ${stopwatch.elapsed.inSeconds}s \n https://griddio2.web.app");
+                        } else if (stopwatch.elapsed.inSeconds < 120){
                           Share.share("Griddio #${getGameNum()}: 🔴 ${stopwatch.elapsed.inSeconds}s \n https://griddio2.web.app");
+                        } else {
+                          Share.share("Griddio #${getGameNum()}: 💀 ${stopwatch.elapsed.inSeconds}s \n https://griddio2.web.app");
                         }
+
+                        // TODO: If the device is a computer, you should share via clipboard rather than native share which will be email
+
                         //   await Clipboard.setData(ClipboardData(text: "Griddio #${getGameNum()}: 🟢 ${stopwatch.elapsed.inSeconds}s \n https://griddio2.web.app" ));
                         // } else if (stopwatch.elapsed.inSeconds < 40) {
                         //   await Clipboard.setData(ClipboardData(text: "Griddio #${getGameNum()}: 🟡 ${stopwatch.elapsed.inSeconds}s \n https://griddio2.web.app" ));
@@ -484,6 +496,37 @@ class MainPageState extends State<MainPage> {
               )
           ),
 
+          // Clear button
+          Positioned.fill(
+            bottom: screenHeight - gridTop,
+            // left: (screenWidth / 2) - (gridSquareWidth * 2) / 2,
+            child: Align(
+              alignment: Alignment.center,
+                child: FilledButton(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Colors.grey.shade900,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(gridSquareWidth / 20)
+                    )
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      print("CLEAR");
+                    });
+                  },
+                  child: Text(
+                    "CLEAR",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: gws / 3,
+                      decoration: TextDecoration.none,
+                      fontFamily: fontfamily
+                    ),
+                  ),
+                )
+            ),
+          ),
+          
           // Grid
           for (var i = 0; i < 36; i++) ... [
             Positioned(
